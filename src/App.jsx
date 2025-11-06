@@ -63,6 +63,13 @@ function App() {
           Home
         </Link>
         <Link
+          to="/dashboard"
+          className="no-underline text-sm font-medium"
+          style={{ color: isDark ? "#d1d5db" : "#374151" }}
+        >
+          Dashboard
+        </Link>
+        <Link
           to="/login"
           className="no-underline text-sm font-medium"
           style={{ color: isDark ? "#d1d5db" : "#374151" }}
