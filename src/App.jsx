@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, Route, Routes } from "react-router-dom";
+import { Link, Route, Routes, useLocation } from "react-router-dom";
 import "./App.css";
 import Home from "./pages/Home.jsx";
 import Integrations from "./pages/Integrations.jsx";
@@ -8,6 +8,9 @@ import Dashboard from "./pages/Dashboard.jsx";
 import Signup from "./pages/Signup.jsx";
 
 function App() {
+  const location = useLocation();
+  const isHomePage = location.pathname === "/";
+  const isLoginPage = location.pathname === "/login";
   const [isDark, setIsDark] = useState(() => {
     const saved = localStorage.getItem("darkMode");
     return saved ? JSON.parse(saved) : true; // 기본값은 다크모드
@@ -30,79 +33,99 @@ function App() {
   return (
     <>
       <nav
-        className="fixed top-0 left-0 right-0 z-[1000] flex gap-3 p-3 justify-end items-center shadow-md"
-        style={{
-          backgroundColor: isDark ? "#1f2937" : "#ffffff",
-        }}
+        className={`fixed top-0 left-0 right-0 z-[1000] flex gap-3 p-3 justify-between items-center shadow-md ${
+          isDark ? "bg-gray-800" : "bg-white"
+        }`}
       >
-        <button
-          onClick={toggleDarkMode}
-          className="p-2 rounded-lg transition-colors duration-200"
-          style={{
-            backgroundColor: isDark ? "transparent" : "transparent",
-          }}
-          onMouseEnter={(e) => {
-            e.target.style.backgroundColor = isDark ? "#374151" : "#f3f4f6";
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.backgroundColor = "transparent";
-          }}
-          aria-label={isDark ? "라이트 모드로 전환" : "다크 모드로 전환"}
-        >
-          {isDark ? (
-            <span className="text-xl">☀️</span>
-          ) : (
-            <span className="text-xl">🌙</span>
-          )}
-        </button>
         <Link
           to="/"
-          className="no-underline text-sm font-medium"
-          style={{ color: isDark ? "#d1d5db" : "#374151" }}
+          className={`text-2xl font-bold no-underline ${
+            isDark ? "text-white" : "text-gray-900"
+          }`}
         >
-          Home
+          Relay Tok
         </Link>
-        <Link
-          to="/login"
-          className="no-underline text-sm font-medium"
-          style={{ color: isDark ? "#d1d5db" : "#374151" }}
-        >
-          로그인
-        </Link>
-        <Link
-          to="/signup"
-          className="no-underline text-sm font-medium"
-          style={{ color: isDark ? "#d1d5db" : "#374151" }}
-        >
-          회원가입
-        </Link>
+        <div className="flex gap-3 items-center">
+          <button
+            onClick={toggleDarkMode}
+            className={`px-3 py-1.5 rounded-lg transition-colors duration-200 text-sm font-medium ${
+              isDark
+                ? "text-gray-300 hover:bg-gray-700 hover:text-white"
+                : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+            }`}
+            aria-label={isDark ? "라이트 모드로 전환" : "다크 모드로 전환"}
+          >
+            {isDark ? "라이트모드" : "다크모드"}
+          </button>
+          <Link
+            to="/"
+            className={`no-underline text-sm font-medium px-3 py-1.5 rounded-lg transition-colors duration-200 ${
+              isDark
+                ? "text-gray-300 hover:bg-gray-700 hover:text-white"
+                : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+            }`}
+          >
+            Home
+          </Link>
+          <Link
+            to="/login"
+            className={`no-underline text-sm font-medium px-3 py-1.5 rounded-lg transition-colors duration-200 ${
+              isDark
+                ? "text-gray-300 hover:bg-gray-700 hover:text-white"
+                : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+            }`}
+          >
+            로그인
+          </Link>
+          <Link
+            to="/signup"
+            className={`no-underline text-sm font-medium px-3 py-1.5 rounded-lg transition-colors duration-200 ${
+              isDark
+                ? "text-gray-300 hover:bg-gray-700 hover:text-white"
+                : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+            }`}
+          >
+            회원가입
+          </Link>
+        </div>
       </nav>
       <div
-        className="pt-[60px] min-h-screen"
-        style={{
-          backgroundColor: isDark ? "#2C3539" : "#f9fafb",
-        }}
+        className={`pt-[60px] min-h-screen ${
+          isHomePage || isLoginPage ? "bg-transparent" : isDark ? "bg-gray-900" : "bg-gray-50"
+        }`}
       >
         <Routes>
           <Route path="/" element={<Home isDark={isDark} />} />
-          <Route path="/integrations" element={<Integrations />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/signup" element={<Signup />} />
+          <Route
+            path="/integrations"
+            element={<Integrations isDark={isDark} />}
+          />
+          <Route path="/login" element={<Login isDark={isDark} />} />
+          <Route path="/dashboard" element={<Dashboard isDark={isDark} />} />
+          <Route path="/signup" element={<Signup isDark={isDark} />} />
         </Routes>
       </div>
       <footer
-        className="w-full flex justify-center items-center p-5 m-0 box-border border-t"
-        style={{
-          backgroundColor: isDark ? "#1f2937" : "#ffffff",
-          borderColor: isDark ? "#374151" : "#e5e7eb",
-        }}
+        className={`w-full relative flex justify-center items-center p-5 m-0 box-border border-t ${
+          isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
+        }`}
       >
+        {/* 그라데이션 오버레이 - 위에서 아래로 부드럽게 전환 */}
+        <div
+          className="absolute -top-32 left-0 right-0 h-40 pointer-events-none"
+          style={{
+            background: isDark
+              ? "linear-gradient(to bottom, transparent 0%, rgba(31, 41, 55, 0.1) 15%, rgba(31, 41, 55, 0.25) 35%, rgba(31, 41, 55, 0.5) 60%, rgba(31, 41, 55, 0.75) 85%, rgb(31, 41, 55) 100%)"
+              : "linear-gradient(to bottom, transparent 0%, rgba(255, 255, 255, 0.1) 15%, rgba(255, 255, 255, 0.25) 35%, rgba(255, 255, 255, 0.5) 60%, rgba(255, 255, 255, 0.75) 85%, rgb(255, 255, 255) 100%)"
+          }}
+        />
         <p
-          className="m-0 text-sm font-sans"
-          style={{ color: isDark ? "#9ca3af" : "#6b7280" }}
+          className={`relative z-10 m-0 text-sm font-sans flex gap-2 ${
+            isDark ? "text-gray-400" : "text-gray-500"
+          }`}
         >
-          © 2025 Hacky-Tocky
+          <span>© 2025 Hacky-Tocky</span>
+          <span>@Team BF's</span>
         </p>
       </footer>
     </>

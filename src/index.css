@@ -1,1 +1,10 @@
+/* index.css */
 @import "tailwindcss";
+
+html.dark body {
+  background-color: #111827; /* gray-900 */
+}
+
+html:not(.dark) body {
+  background-color: #f9fafb; /* gray-50 */
+}
