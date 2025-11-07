@@ -6,6 +6,10 @@ function Dashboard() {
 	const [error, setError] = useState('')
 	const [keywords, setKeywords] = useState([])
 	const [selectedTag, setSelectedTag] = useState('전체')
+	
+	// 태그 필터링 (계층적 태그 시스템)
+	const [tagFilter1, setTagFilter1] = useState('전체')
+	const [tagFilter2, setTagFilter2] = useState('전체')
 	const [hoveredDay, setHoveredDay] = useState(null)
 	const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 })
 	
@@ -24,6 +28,70 @@ function Dashboard() {
 		'상담상태'
 	]
 	
+	// 계층적 태그 시스템 (최대 3단계)
+	const [hierarchicalTags] = useState([
+		'전체',
+		'고객유형/VIP',
+		'고객유형/반복컴플레인',
+		'고객유형/신규고객',
+		'고객유형/휴면고객',
+		'상품문의/교환/사이즈',
+		'상품문의/교환/색상',
+		'상품문의/교환/불량',
+		'상품문의/반품/단순변심',
+		'상품문의/반품/사이즈',
+		'상품문의/재고/입고문의',
+		'상품문의/재고/품절',
+		'배송문의/배송지연',
+		'배송문의/배송조회',
+		'배송문의/배송변경',
+		'결제문의/결제실패',
+		'결제문의/환불',
+		'결제문의/쿠폰',
+		'이벤트/할인',
+		'이벤트/포인트',
+		'기타/문의',
+		'기타/건의'
+	])
+	
+	// 상담 데이터 (계층적 태그 포함)
+	const [inquiryData] = useState(() => {
+		const data = []
+		const today = new Date()
+		
+		// 최근 90일간의 더미 데이터 생성
+		for (let i = 89; i >= 0; i--) {
+			const date = new Date(today)
+			date.setDate(date.getDate() - i)
+			const dateStr = date.toISOString().split('T')[0]
+			const isWeekend = date.getDay() === 0 || date.getDay() === 6
+			
+			// 각 날짜마다 랜덤한 상담 건수 생성
+			const dailyCount = isWeekend ? Math.floor(Math.random() * 30) + 5 : Math.floor(Math.random() * 60) + 20
+			
+			for (let j = 0; j < dailyCount; j++) {
+				// 랜덤하게 태그 1-3개 선택
+				const tagCount = Math.floor(Math.random() * 2) + 1 // 1-2개 태그
+				const selectedTags = []
+				
+				for (let k = 0; k < tagCount; k++) {
+					const randomTag = hierarchicalTags[Math.floor(Math.random() * (hierarchicalTags.length - 1)) + 1]
+					if (!selectedTags.includes(randomTag)) {
+						selectedTags.push(randomTag)
+					}
+				}
+				
+				data.push({
+					date: dateStr,
+					tags: selectedTags,
+					id: `inquiry-${dateStr}-${j}`
+				})
+			}
+		}
+		
+		return data
+	})
+	
 	// 더미 데이터 (실제로는 API에서 가져올 데이터)
 	const [kpiData] = useState({
 		totalInquiries: 1234,
@@ -34,9 +102,6 @@ function Dashboard() {
 
 	// 태그별 히트맵 데이터 (최근 90일)
 	const [heatmapData, setHeatmapData] = useState([])
-	
-	// 다차원 히트맵 데이터 저장소 (날짜별 조합 데이터)
-	const [dimensionalHeatmapData] = useState({})
 	
 	// 다차원 데이터 저장소 (모든 조합 가능한 데이터)
 	const [multiDimensionalData] = useState({
@@ -462,9 +527,6 @@ function Dashboard() {
 			try {
 				const data = await getWeeklyKeywords({ limit: 10 })
 				if (mounted) setKeywords(Array.isArray(data) ? data : [])
-				
-				// 히트맵 데이터 생성 (최근 90일)
-				generateHeatmapData()
 			} catch (err) {
 				if (mounted) setError(err?.message || '데이터 로드 실패')
 			} finally {
@@ -474,71 +536,42 @@ function Dashboard() {
 		return () => { mounted = false }
 	}, [])
 
-	const generateHeatmapData = () => {
-		const data = []
-		const today = new Date()
-		const tags = ['반품 및 교환', '구매', '상담', '배송', '결제']
-		
-		for (let i = 89; i >= 0; i--) {
-			const date = new Date(today)
-			date.setDate(date.getDate() - i)
-			
-			tags.forEach(tag => {
-				// 랜덤하게 데이터 생성 (주말에는 적게)
-				const isWeekend = date.getDay() === 0 || date.getDay() === 6
-				const baseCount = isWeekend ? Math.random() * 30 : Math.random() * 80
-				
-				data.push({
-					date: date.toISOString().split('T')[0],
-					tag,
-					count: Math.floor(baseCount)
-				})
-			})
-		}
-		setHeatmapData(data)
-	}
-
-	// 다차원 히트맵 데이터 생성 (선택된 차원 조합에 따라)
-	const generateDimensionalHeatmap = () => {
-		const currentData = getCurrentDimensionData()
-		if (currentData.length === 0) return {}
-		
+	// 태그 필터링된 히트맵 데이터 생성
+	const generateTagFilteredHeatmap = () => {
 		const dateData = {}
-		const today = new Date()
 		
-		// 최근 90일의 날짜별 데이터 생성
-		for (let i = 89; i >= 0; i--) {
-			const date = new Date(today)
-			date.setDate(date.getDate() - i)
-			const dateStr = date.toISOString().split('T')[0]
-			const isWeekend = date.getDay() === 0 || date.getDay() === 6
+		// 필터 조건에 맞는 상담 데이터 필터링
+		const filteredInquiries = inquiryData.filter(inquiry => {
+			const hasTag1 = tagFilter1 === '전체' || inquiry.tags.includes(tagFilter1)
+			const hasTag2 = tagFilter2 === '전체' || inquiry.tags.includes(tagFilter2)
 			
-			// 각 dimension1 값에 대해 랜덤 데이터 생성
-			currentData.forEach(item => {
-				// 해당 날짜에 이 조합이 발생한 횟수 (랜덤)
-				const baseMultiplier = isWeekend ? 0.3 : 1.0
-				const dailyCount = Math.floor((item.total / 90) * (Math.random() * 1.5 + 0.5) * baseMultiplier)
-				
-				if (!dateData[dateStr]) dateData[dateStr] = 0
-				dateData[dateStr] += dailyCount
-			})
-		}
+			// AND 조건: 두 태그 모두 포함해야 함
+			if (tagFilter1 !== '전체' && tagFilter2 !== '전체') {
+				return hasTag1 && hasTag2
+			}
+			// OR 조건: 둘 중 하나라도 포함
+			return hasTag1 || hasTag2
+		})
+		
+		// 날짜별로 그룹화
+		filteredInquiries.forEach(inquiry => {
+			if (!dateData[inquiry.date]) {
+				dateData[inquiry.date] = 0
+			}
+			dateData[inquiry.date]++
+		})
 		
 		return dateData
 	}
 
-	// 선택된 차원 조합에 따라 히트맵 데이터 생성
-	const dimensionalHeatmap = generateDimensionalHeatmap()
-	
-	// 날짜별로 그룹화 (다차원 분석 기반)
-	const groupedByDate = dimensionalHeatmap
+	const tagHeatmapData = generateTagFilteredHeatmap()
+	const maxCount = Math.max(...Object.values(tagHeatmapData), 0)
 
 	// 최댓값 기준 5등급제 색상 계산
-	const getHeatmapColor = (count, maxCount) => {
-		if (count === 0) return 'bg-gray-100 dark:bg-gray-800'
-		if (maxCount === 0) return 'bg-gray-100 dark:bg-gray-800'
+	const getHeatmapColor = (count, max) => {
+		if (count === 0 || max === 0) return 'bg-gray-100 dark:bg-gray-800'
 		
-		const percentage = (count / maxCount) * 100
+		const percentage = (count / max) * 100
 		
 		if (percentage <= 20) return 'bg-emerald-200 dark:bg-emerald-900'
 		if (percentage <= 40) return 'bg-emerald-400 dark:bg-emerald-700'
@@ -547,17 +580,15 @@ function Dashboard() {
 		return 'bg-emerald-800 dark:bg-emerald-300'
 	}
 
-	// 최댓값 계산
-	const maxCount = Math.max(...Object.values(groupedByDate), 0)
-
-	// 주차별로 그룹화
-	const getWeekNumber = (dateStr) => {
-		const date = new Date(dateStr)
-		const firstDay = new Date(date.getFullYear(), 0, 1)
-		const days = Math.floor((date - firstDay) / (24 * 60 * 60 * 1000))
-		return Math.ceil(days / 7)
+	const getHeatmapColorOld = (count) => {
+		if (count === 0) return 'bg-gray-100 dark:bg-gray-800'
+		if (count < 20) return 'bg-emerald-200 dark:bg-emerald-900'
+		if (count < 40) return 'bg-emerald-400 dark:bg-emerald-700'
+		if (count < 60) return 'bg-emerald-600 dark:bg-emerald-500'
+		return 'bg-emerald-800 dark:bg-emerald-300'
 	}
 
+	// 주차별로 그룹화
 	const weeks = []
 	const today = new Date()
 	for (let i = 12; i >= 0; i--) {
@@ -568,7 +599,7 @@ function Dashboard() {
 			const dateStr = date.toISOString().split('T')[0]
 			weekDays.push({
 				date: dateStr,
-				count: groupedByDate[dateStr] || 0,
+				count: tagHeatmapData[dateStr] || 0,
 				day: date.getDay()
 			})
 		}
@@ -589,20 +620,77 @@ function Dashboard() {
 
 			{/* Main Grid */}
 			<div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-				{/* Dimensional Heatmap Calendar */}
+				{/* Tag Filtered Heatmap Calendar */}
 				<div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
 					<div className="mb-6">
-						<div className="flex items-center justify-between mb-2">
+						<div className="flex items-center justify-between mb-4">
 							<h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">
-								📊 다차원 활동 히트맵 (최근 90일)
+								🏷️ 계층적 태그 필터 히트맵 (최근 90일)
 							</h2>
 						</div>
-						<p className="text-sm text-gray-600 dark:text-gray-400">
-							<span className="font-semibold text-blue-600 dark:text-blue-400">{dimension1}</span>
-							<span className="mx-2">×</span>
-							<span className="font-semibold text-purple-600 dark:text-purple-400">{dimension2}</span>
-							<span className="ml-2">조합의 일별 발생 빈도</span>
-						</p>
+						
+						{/* Tag Filter Selectors */}
+						<div className="flex flex-col sm:flex-row gap-3 mb-4">
+							<div className="flex-1">
+								<label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+									태그 필터 1
+								</label>
+								<select 
+									value={tagFilter1}
+									onChange={(e) => setTagFilter1(e.target.value)}
+									className="w-full px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+								>
+									{hierarchicalTags.map(tag => (
+										<option key={tag} value={tag}>{tag}</option>
+									))}
+								</select>
+							</div>
+							
+							<div className="flex items-end justify-center">
+								<div className="px-3 py-2 text-gray-400 dark:text-gray-500 font-bold">
+									{tagFilter1 !== '전체' && tagFilter2 !== '전체' ? 'AND' : 'OR'}
+								</div>
+							</div>
+							
+							<div className="flex-1">
+								<label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+									태그 필터 2
+								</label>
+								<select 
+									value={tagFilter2}
+									onChange={(e) => setTagFilter2(e.target.value)}
+									className="w-full px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
+								>
+									{hierarchicalTags.map(tag => (
+										<option key={tag} value={tag}>{tag}</option>
+									))}
+								</select>
+							</div>
+						</div>
+						
+						{/* Filter Info */}
+						<div className="flex items-center justify-between text-sm">
+							<p className="text-gray-600 dark:text-gray-400">
+								{tagFilter1 === '전체' && tagFilter2 === '전체' && '모든 상담 데이터'}
+								{tagFilter1 !== '전체' && tagFilter2 === '전체' && (
+									<><span className="font-semibold text-blue-600 dark:text-blue-400">{tagFilter1}</span> 태그 포함</>
+								)}
+								{tagFilter1 === '전체' && tagFilter2 !== '전체' && (
+									<><span className="font-semibold text-purple-600 dark:text-purple-400">{tagFilter2}</span> 태그 포함</>
+								)}
+								{tagFilter1 !== '전체' && tagFilter2 !== '전체' && (
+									<>
+										<span className="font-semibold text-blue-600 dark:text-blue-400">{tagFilter1}</span>
+										<span className="mx-1">AND</span>
+										<span className="font-semibold text-purple-600 dark:text-purple-400">{tagFilter2}</span>
+										<span className="ml-1">모두 포함</span>
+									</>
+								)}
+							</p>
+							<div className="text-xs bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 px-3 py-1 rounded-full font-medium">
+								총 {Object.values(tagHeatmapData).reduce((sum, count) => sum + count, 0).toLocaleString()}건
+							</div>
+						</div>
 					</div>
 
 					{/* Calendar Grid */}
@@ -637,14 +725,14 @@ function Dashboard() {
 						{/* Floating Tooltip */}
 						{hoveredDay && (
 							<div 
-								className="fixed z-50 pointer-events-none animate-bounce-subtle"
+								className="fixed z-50 pointer-events-none"
 								style={{
 									left: `${tooltipPosition.x}px`,
 									top: `${tooltipPosition.y}px`,
 									transform: 'translate(-50%, -100%)'
 								}}
 							>
-								<div className="bg-white dark:bg-gray-800 rounded-lg shadow-2xl border-2 border-blue-500 dark:border-blue-400 p-4 min-w-[200px]">
+								<div className="bg-white dark:bg-gray-800 rounded-lg shadow-2xl border-2 border-blue-500 dark:border-blue-400 p-4 min-w-[220px] animate-pulse-subtle">
 									<div className="text-center space-y-2">
 										<div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
 											{hoveredDay.dayName}요일
@@ -653,9 +741,6 @@ function Dashboard() {
 											{hoveredDay.date}
 										</div>
 										<div className="border-t border-gray-200 dark:border-gray-600 pt-2">
-											<div className="text-xs text-gray-600 dark:text-gray-400 mb-1">
-												{dimension1} × {dimension2}
-											</div>
 											<div className="text-3xl font-bold text-blue-600 dark:text-blue-400">
 												{hoveredDay.count.toLocaleString()}
 											</div>
@@ -673,31 +758,22 @@ function Dashboard() {
 							</div>
 						)}
 						
-						{/* Statistics */}
+						{/* Legend & Stats */}
 						<div className="mt-4 flex items-center justify-between text-sm">
 							<div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
-								<span>0%</span>
+								<span className="text-xs">0%</span>
 								<div className="w-4 h-4 bg-gray-100 dark:bg-gray-800 rounded-sm border border-gray-300 dark:border-gray-600"></div>
 								<div className="w-4 h-4 bg-emerald-200 dark:bg-emerald-900 rounded-sm"></div>
 								<div className="w-4 h-4 bg-emerald-400 dark:bg-emerald-700 rounded-sm"></div>
 								<div className="w-4 h-4 bg-emerald-600 dark:bg-emerald-500 rounded-sm"></div>
 								<div className="w-4 h-4 bg-emerald-700 dark:bg-emerald-400 rounded-sm"></div>
 								<div className="w-4 h-4 bg-emerald-800 dark:bg-emerald-300 rounded-sm"></div>
-								<span>100%</span>
+								<span className="text-xs">100%</span>
 							</div>
 							
-							{/* Total Count */}
-							<div className="text-gray-700 dark:text-gray-300 flex items-baseline gap-2">
-								<div>
-									<span className="font-semibold text-xs">총 </span>
-									<span className="text-lg font-bold text-blue-600 dark:text-blue-400">
-										{Object.values(groupedByDate).reduce((sum, count) => sum + count, 0).toLocaleString()}
-									</span>
-									<span className="font-semibold text-xs"> 건</span>
-								</div>
-								<div className="text-xs text-gray-500 dark:text-gray-400">
-									(최대 {maxCount.toLocaleString()}건/일)
-								</div>
+							{/* Max Count */}
+							<div className="text-xs text-gray-500 dark:text-gray-400">
+								최대 <span className="font-bold text-gray-700 dark:text-gray-300">{maxCount.toLocaleString()}</span>건/일
 							</div>
 						</div>
 					</div>
