@@ -611,7 +611,7 @@ function Dashboard() {
 			{/* Header */}
 			<div className="mb-8">
 				<h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-					📊 Relay Tok 대시보드
+					Relay Tok 대시보드
 				</h1>
 				<p className="text-gray-600 dark:text-gray-400 mt-2">
 					채널톡 상담 데이터 통합 분석
@@ -625,7 +625,7 @@ function Dashboard() {
 					<div className="mb-6">
 						<div className="flex items-center justify-between mb-4">
 							<h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">
-								🏷️ 계층적 태그 필터 히트맵 (최근 90일)
+								계층적 태그 필터 히트맵 (최근 90일)
 							</h2>
 						</div>
 						
@@ -783,7 +783,7 @@ function Dashboard() {
 				<div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
 					<div className="mb-6">
 						<h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">
-							� 다차원 분석 (nC2 조합)
+							다차원 분석 (nC2 조합)
 						</h2>
 						
 						{/* Dimension Selector */}
@@ -885,7 +885,7 @@ function Dashboard() {
 			{/* Tag Trends */}
 			<div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700 mb-8">
 				<h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6">
-					📈 태그별 트렌드 (최근 7일)
+					태그별 트렌드 (최근 7일)
 				</h2>
 				<div className="grid grid-cols-1 md:grid-cols-5 gap-6">
 					{Object.entries(tagTrendData).map(([tag, data]) => (
@@ -923,7 +923,7 @@ function Dashboard() {
 			{/* Hot Keywords */}
 			<div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700 mb-8">
 				<h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6">
-					🔥 이번 주 핫 키워드
+					이번 주 인기 키워드
 				</h2>
 				{loading && (
 					<div className="flex items-center justify-center py-8">
@@ -955,7 +955,7 @@ function Dashboard() {
 			{/* KPI Cards (Less Important - Bottom) */}
 			<div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
 				<h2 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">
-					📈 부가 지표
+					부가 지표
 				</h2>
 				<div className="grid grid-cols-2 md:grid-cols-4 gap-4">
 					<div className="text-center p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
