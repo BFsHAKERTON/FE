@@ -4,13 +4,16 @@ import "./App.css";
 import Home from "./pages/Home.jsx";
 import Integrations from "./pages/Integrations.jsx";
 import Login from "./pages/Login.jsx";
-import Dashboard from "./pages/Dashboard.jsx";
+import Dashboard from "./pages/Dashboard";
 import Signup from "./pages/Signup.jsx";
 
 function App() {
   const location = useLocation();
-  const isHomePage = location.pathname === "/";
-  const isLoginPage = location.pathname === "/login";
+  const pathname = location.pathname;
+  const isHomePage = pathname === "/";
+  const isLoginPage = pathname === "/login";
+  const isDashboardPage = pathname === "/dashboard";
+  const isCustomBackgroundPage = isHomePage || isLoginPage || isDashboardPage;
   const [isDark, setIsDark] = useState(() => {
     const saved = localStorage.getItem("darkMode");
     return saved ? JSON.parse(saved) : true; // 기본값은 다크모드
@@ -33,13 +36,13 @@ function App() {
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 right-0 z-[1000] flex gap-3 p-3 justify-between items-center shadow-md ${
-          isDark ? "bg-gray-800" : "bg-white"
-        }`}
+        className={`fixed top-0 left-0 right-0 z-[1000] flex gap-3 p-3 justify-between items-center ${
+          isCustomBackgroundPage ? "shadow-none" : "shadow-md"
+        } ${isDark ? "bg-gray-800" : "bg-white"}`}
       >
         <Link
           to="/"
-          className={`text-2xl font-bold no-underline ${
+          className={`text-2xl font-bold tracking-tight no-underline ${
             isDark ? "text-white" : "text-gray-900"
           }`}
         >
@@ -48,7 +51,7 @@ function App() {
         <div className="flex gap-3 items-center">
           <button
             onClick={toggleDarkMode}
-            className={`px-3 py-1.5 rounded-lg transition-colors duration-200 text-sm font-medium ${
+            className={`px-3 py-1.5 rounded-lg transition-colors duration-200 text-sm font-semibold tracking-tight ${
               isDark
                 ? "text-gray-300 hover:bg-gray-700 hover:text-white"
                 : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
@@ -59,7 +62,7 @@ function App() {
           </button>
           <Link
             to="/"
-            className={`no-underline text-sm font-medium px-3 py-1.5 rounded-lg transition-colors duration-200 ${
+            className={`no-underline text-sm font-semibold tracking-tight px-3 py-1.5 rounded-lg transition-colors duration-200 ${
               isDark
                 ? "text-gray-300 hover:bg-gray-700 hover:text-white"
                 : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
@@ -69,7 +72,7 @@ function App() {
           </Link>
           <Link
             to="/login"
-            className={`no-underline text-sm font-medium px-3 py-1.5 rounded-lg transition-colors duration-200 ${
+            className={`no-underline text-sm font-semibold tracking-tight px-3 py-1.5 rounded-lg transition-colors duration-200 ${
               isDark
                 ? "text-gray-300 hover:bg-gray-700 hover:text-white"
                 : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
@@ -79,7 +82,7 @@ function App() {
           </Link>
           <Link
             to="/signup"
-            className={`no-underline text-sm font-medium px-3 py-1.5 rounded-lg transition-colors duration-200 ${
+            className={`no-underline text-sm font-semibold tracking-tight px-3 py-1.5 rounded-lg transition-colors duration-200 ${
               isDark
                 ? "text-gray-300 hover:bg-gray-700 hover:text-white"
                 : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
@@ -91,7 +94,7 @@ function App() {
       </nav>
       <div
         className={`pt-[60px] min-h-screen ${
-          isHomePage || isLoginPage ? "bg-transparent" : isDark ? "bg-gray-900" : "bg-gray-50"
+          isCustomBackgroundPage ? "bg-transparent" : isDark ? "bg-gray-900" : "bg-gray-50"
         }`}
       >
         <Routes>
