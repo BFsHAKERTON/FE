@@ -5,16 +5,36 @@ import KPICards from '../components/dashboard/KPICards'
 import TagHeatmapCalendar from '../components/dashboard/TagHeatmapCalendar'
 import HotKeywords from '../components/dashboard/HotKeywords'
 
-// 유틸리티: 날짜에서 요일 계산
-const getWeekdayFromDate = (dateStr) => {
-	const date = new Date(dateStr)
+// 유틸리티: timestamp에서 날짜/요일/시간대 유도
+const getDateFromTimestamp = (timestamp) => {
+	const date = new Date(timestamp)
+	return date.toISOString().split('T')[0] // YYYY-MM-DD
+}
+
+const getWeekdayFromTimestamp = (timestamp) => {
+	const date = new Date(timestamp)
 	return date.toLocaleDateString('ko-KR', { weekday: 'long' })
 }
 
-// inquiryData에 요일을 자동으로 추가
+const getTimeSlotFromTimestamp = (timestamp) => {
+	const date = new Date(timestamp)
+	const hour = date.getHours()
+	
+	if (hour >= 9 && hour < 11) return '09-11시'
+	if (hour >= 11 && hour < 13) return '11-13시'
+	if (hour >= 13 && hour < 15) return '13-15시'
+	if (hour >= 15 && hour < 17) return '15-17시'
+	if (hour >= 17 && hour < 19) return '17-19시'
+	
+	return '기타'
+}
+
+// inquiryData에 유도 속성 추가 (date, weekday, timeSlot)
 const inquiryData = mockInquiryData.map(inquiry => ({
 	...inquiry,
-	weekday: getWeekdayFromDate(inquiry.date)
+	date: getDateFromTimestamp(inquiry.createdAt),
+	weekday: getWeekdayFromTimestamp(inquiry.createdAt),
+	timeSlot: getTimeSlotFromTimestamp(inquiry.createdAt)
 }))
 
 function Dashboard() {
@@ -369,14 +389,15 @@ function Dashboard() {
 	const getHeatmapColor = (count, max) => {
 		if (count === 0 || max === 0) return 'bg-gray-100 dark:bg-gray-800'
 		
-		// 최댓값이 작을 때(1~4건) 전체적으로 연한 색 사용
+		// 최댓값이 1~4건일 때는 고정 색상 사용
 		if (max <= 4) {
 			if (count === 1) return 'bg-emerald-200 dark:bg-emerald-900'
 			if (count === 2) return 'bg-emerald-300 dark:bg-emerald-800'
 			if (count === 3) return 'bg-emerald-400 dark:bg-emerald-700'
-			return 'bg-emerald-500 dark:bg-emerald-600'
+			if (count === 4) return 'bg-emerald-500 dark:bg-emerald-600'
 		}
 		
+		// 최댓값이 5건 이상일 때는 퍼센티지 기반
 		const percentage = (count / max) * 100
 		
 		if (percentage <= 20) return 'bg-emerald-200 dark:bg-emerald-900'
