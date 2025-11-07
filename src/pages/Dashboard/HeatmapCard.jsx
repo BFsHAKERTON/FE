@@ -154,7 +154,7 @@ function HeatmapCard({
               {week.map((day, dayIdx) => (
                 <div
                   key={dayIdx}
-                  className={`w-4 h-4 rounded-sm ${getHeatmapColor(
+                  className={`w-6 h-6 rounded-md ${getHeatmapColor(
                     day.count,
                     maxCount
                   )} hover:ring-2 hover:ring-blue-500 transition-all cursor-pointer relative`}
@@ -221,12 +221,12 @@ function HeatmapCard({
         <div className="mt-4 flex items-center justify-between text-sm">
           <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
             <span className="text-xs">0%</span>
-            <div className="w-4 h-4 bg-gray-100 dark:bg-gray-800 rounded-sm border border-gray-300 dark:border-gray-600" />
-            <div className="w-4 h-4 bg-emerald-200 dark:bg-emerald-900 rounded-sm" />
-            <div className="w-4 h-4 bg-emerald-400 dark:bg-emerald-700 rounded-sm" />
-            <div className="w-4 h-4 bg-emerald-600 dark:bg-emerald-500 rounded-sm" />
-            <div className="w-4 h-4 bg-emerald-700 dark:bg-emerald-400 rounded-sm" />
-            <div className="w-4 h-4 bg-emerald-800 dark:bg-emerald-300 rounded-sm" />
+            <div className="w-6 h-6 bg-gray-100 dark:bg-gray-800 rounded-md border border-gray-300 dark:border-gray-600" />
+            <div className="w-6 h-6 bg-emerald-200 dark:bg-emerald-900 rounded-md" />
+            <div className="w-6 h-6 bg-emerald-400 dark:bg-emerald-700 rounded-md" />
+            <div className="w-6 h-6 bg-emerald-600 dark:bg-emerald-500 rounded-md" />
+            <div className="w-6 h-6 bg-emerald-700 dark:bg-emerald-400 rounded-md" />
+            <div className="w-6 h-6 bg-emerald-800 dark:bg-emerald-300 rounded-md" />
             <span className="text-xs">100%</span>
           </div>
           <div className="text-xs text-gray-500 dark:text-gray-400">
