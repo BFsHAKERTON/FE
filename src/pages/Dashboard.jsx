@@ -4,7 +4,18 @@ import { mockInquiryData } from '../data/mockInquiryData'
 import KPICards from '../components/dashboard/KPICards'
 import TagHeatmapCalendar from '../components/dashboard/TagHeatmapCalendar'
 import HotKeywords from '../components/dashboard/HotKeywords'
-import MultiDimensionAnalysis from '../components/dashboard/MultiDimensionAnalysis'
+
+// 유틸리티: 날짜에서 요일 계산
+const getWeekdayFromDate = (dateStr) => {
+	const date = new Date(dateStr)
+	return date.toLocaleDateString('ko-KR', { weekday: 'long' })
+}
+
+// inquiryData에 요일을 자동으로 추가
+const inquiryData = mockInquiryData.map(inquiry => ({
+	...inquiry,
+	weekday: getWeekdayFromDate(inquiry.date)
+}))
 
 function Dashboard() {
 	const [loading, setLoading] = useState(true)
@@ -23,14 +34,14 @@ function Dashboard() {
 	const [dimension2, setDimension2] = useState('시간대')
 	const [dimension3, setDimension3] = useState('없음')
 	
-	// 사용 가능한 차원들 (유입페이지 제거)
+	// 사용 가능한 차원들
 	const availableDimensions = [
 		'상담태그',
 		'시간대',
 		'요일',
 		'담당자',
-		'고객등급',
-		'상담상태'
+		'상담상태',
+		'이슈민감도'
 	]
 	
 	// 시각화 타입 (GA4 스타일)
@@ -39,10 +50,9 @@ function Dashboard() {
 	// 계층적 태그 시스템 (최대 3단계)
 	const [hierarchicalTags] = useState([
 		'전체',
+		'고객유형/일반',
 		'고객유형/VIP',
 		'고객유형/반복컴플레인',
-		'고객유형/신규고객',
-		'고객유형/휴면고객',
 		'상품문의/교환/사이즈',
 		'상품문의/교환/색상',
 		'상품문의/교환/불량',
@@ -62,9 +72,6 @@ function Dashboard() {
 		'기타/건의'
 	])
 	
-	// Mock 상담 데이터 (별도 파일에서 import)
-	const [inquiryData] = useState(mockInquiryData)
-	
 	// 현재 선택된 차원 조합의 데이터 가져오기 (2차원 또는 3차원)
 	// inquiryData에서 실시간으로 필터링하여 생성
 	
@@ -82,14 +89,22 @@ function Dashboard() {
 	// 현재 선택된 차원 조합의 데이터 가져오기 (2차원 또는 3차원)
 	// inquiryData에서 실시간으로 필터링하여 생성
 	const getCurrentDimensionData = () => {
+		// 차원별 정렬 순서 정의
+		const dimensionOrder = {
+			'이슈민감도': ['낮음', '보통', '높음'],
+			'요일': ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'],
+			'시간대': ['09-11시', '11-13시', '13-15시', '15-17시', '17-19시'],
+			'상담상태': ['대기', '처리중', '완료']
+		}
+		
 		// 차원별 속성 매핑
 		const dimensionMapping = {
 			'상담태그': 'tags',
 			'시간대': 'timeSlot',
 			'요일': 'weekday',
 			'담당자': 'manager',
-			'고객등급': 'customerGrade',
-			'상담상태': 'status'
+			'상담상태': 'status',
+			'이슈민감도': 'sensitivity'
 		}
 		
 		// 계층적 태그를 단순 카테고리로 변환하는 함수
@@ -217,8 +232,48 @@ function Dashboard() {
 			return itemData
 		})
 		
-		// 총 건수 기준으로 정렬
-		return result.sort((a, b) => b.total - a.total).slice(0, 8)
+		// 차원1에 정렬 순서가 정의되어 있으면 그 순서대로, 아니면 총 건수 기준으로 정렬
+		if (dimensionOrder[dimension1]) {
+			const order = dimensionOrder[dimension1]
+			result.sort((a, b) => {
+				const indexA = order.indexOf(a.dimension1Value)
+				const indexB = order.indexOf(b.dimension1Value)
+				// 정의된 순서에 없으면 뒤로
+				if (indexA === -1 && indexB === -1) return b.total - a.total
+				if (indexA === -1) return 1
+				if (indexB === -1) return -1
+				return indexA - indexB
+			})
+		} else {
+			// 총 건수 기준으로 정렬
+			result.sort((a, b) => b.total - a.total)
+		}
+		
+		return result.slice(0, 8)
+	}
+
+	// 차원별 정렬 순서를 적용하는 헬퍼 함수
+	const sortBreakdownEntries = (entries, dimensionName) => {
+		const dimensionOrder = {
+			'이슈민감도': ['낮음', '보통', '높음'],
+			'요일': ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'],
+			'시간대': ['09-11시', '11-13시', '13-15시', '15-17시', '17-19시'],
+			'고객등급': ['일반', 'SILVER', 'GOLD', 'VIP'],
+			'상담상태': ['대기', '처리중', '완료']
+		}
+		
+		if (dimensionOrder[dimensionName]) {
+			const order = dimensionOrder[dimensionName]
+			return entries.sort((a, b) => {
+				const indexA = order.indexOf(a[0])
+				const indexB = order.indexOf(b[0])
+				if (indexA === -1 && indexB === -1) return b[1] - a[1]
+				if (indexA === -1) return 1
+				if (indexB === -1) return -1
+				return indexA - indexB
+			})
+		}
+		return entries // 정렬 순서가 없으면 원래 순서 유지
 	}
 
 	// 태그별 트렌드 데이터 (최근 7일)
@@ -247,21 +302,53 @@ function Dashboard() {
 		return () => { mounted = false }
 	}, [])
 
-	// 태그 필터링된 히트맵 데이터 생성
+	// 다차원 필터링된 히트맵 데이터 생성
 	const generateTagFilteredHeatmap = () => {
 		const dateData = {}
 		
 		// 필터 조건에 맞는 상담 데이터 필터링
 		const filteredInquiries = inquiryData.filter(inquiry => {
-			const hasTag1 = tagFilter1 === '전체' || inquiry.tags.includes(tagFilter1)
-			const hasTag2 = tagFilter2 === '전체' || inquiry.tags.includes(tagFilter2)
-			
-			// AND 조건: 두 태그 모두 포함해야 함
-			if (tagFilter1 !== '전체' && tagFilter2 !== '전체') {
-				return hasTag1 && hasTag2
+			// 필터1 체크 (상담태그)
+			let matchFilter1 = tagFilter1 === '전체'
+			if (!matchFilter1) {
+				matchFilter1 = inquiry.tags.some(tag => 
+					tag === tagFilter1 || tag.startsWith(tagFilter1 + '/')
+				)
 			}
-			// OR 조건: 둘 중 하나라도 포함
-			return hasTag1 || hasTag2
+			
+			// 필터2 체크 (모든 차원 지원)
+			let matchFilter2 = tagFilter2 === '전체'
+			if (!matchFilter2) {
+				// 상담태그인 경우 (고객유형 태그 포함)
+				if (hierarchicalTags.includes(tagFilter2)) {
+					matchFilter2 = inquiry.tags.some(tag => 
+						tag === tagFilter2 || tag.startsWith(tagFilter2 + '/')
+					)
+				}
+				// 시간대
+				else if (['09-11시', '11-13시', '13-15시', '15-17시', '17-19시'].includes(tagFilter2)) {
+					matchFilter2 = inquiry.timeSlot === tagFilter2
+				}
+				// 요일
+				else if (['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'].includes(tagFilter2)) {
+					matchFilter2 = inquiry.weekday === tagFilter2
+				}
+				// 담당자
+				else if (['김민수', '이영희', '박철수', '정수진'].includes(tagFilter2)) {
+					matchFilter2 = inquiry.manager === tagFilter2
+				}
+				// 상담상태
+				else if (['대기', '처리중', '완료'].includes(tagFilter2)) {
+					matchFilter2 = inquiry.status === tagFilter2
+				}
+				// 이슈민감도
+				else if (['낮음', '보통', '높음'].includes(tagFilter2)) {
+					matchFilter2 = inquiry.sensitivity === tagFilter2
+				}
+			}
+			
+			// AND 조건: 두 필터 모두 만족해야 함
+			return matchFilter1 && matchFilter2
 		})
 		
 		// 날짜별로 그룹화
@@ -281,6 +368,14 @@ function Dashboard() {
 	// 최댓값 기준 5등급제 색상 계산
 	const getHeatmapColor = (count, max) => {
 		if (count === 0 || max === 0) return 'bg-gray-100 dark:bg-gray-800'
+		
+		// 최댓값이 작을 때(1~4건) 전체적으로 연한 색 사용
+		if (max <= 4) {
+			if (count === 1) return 'bg-emerald-200 dark:bg-emerald-900'
+			if (count === 2) return 'bg-emerald-300 dark:bg-emerald-800'
+			if (count === 3) return 'bg-emerald-400 dark:bg-emerald-700'
+			return 'bg-emerald-500 dark:bg-emerald-600'
+		}
 		
 		const percentage = (count / max) * 100
 		
@@ -331,20 +426,20 @@ function Dashboard() {
 
 			{/* Main Grid */}
 			<div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-				{/* Tag Filtered Heatmap Calendar */}
+				{/* Multi-Dimension Filter Heatmap Calendar */}
 				<div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
 					<div className="mb-6">
 						<div className="flex items-center justify-between mb-4">
 							<h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">
-								계층적 태그 필터 히트맵 (최근 90일)
+								다차원 필터 히트맵 (최근 90일)
 							</h2>
 						</div>
 						
-						{/* Tag Filter Selectors */}
+						{/* Multi-Dimension Filter Selectors */}
 						<div className="flex flex-col sm:flex-row gap-3 mb-4">
 							<div className="flex-1">
 								<label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
-									태그 필터 1
+									필터 1 (상담태그)
 								</label>
 								<select 
 									value={tagFilter1}
@@ -365,16 +460,51 @@ function Dashboard() {
 							
 							<div className="flex-1">
 								<label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
-									태그 필터 2
+									필터 2 (모든 차원)
 								</label>
 								<select 
 									value={tagFilter2}
 									onChange={(e) => setTagFilter2(e.target.value)}
 									className="w-full px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
 								>
-									{hierarchicalTags.map(tag => (
-										<option key={tag} value={tag}>{tag}</option>
-									))}
+									<option value="전체">전체</option>
+									<optgroup label="상담태그">
+										{hierarchicalTags.filter(t => t !== '전체').map(tag => (
+											<option key={tag} value={tag}>{tag}</option>
+										))}
+									</optgroup>
+									<optgroup label="시간대">
+										<option value="09-11시">09-11시</option>
+										<option value="11-13시">11-13시</option>
+										<option value="13-15시">13-15시</option>
+										<option value="15-17시">15-17시</option>
+										<option value="17-19시">17-19시</option>
+									</optgroup>
+									<optgroup label="요일">
+										<option value="월요일">월요일</option>
+										<option value="화요일">화요일</option>
+										<option value="수요일">수요일</option>
+										<option value="목요일">목요일</option>
+										<option value="금요일">금요일</option>
+										<option value="토요일">토요일</option>
+										<option value="일요일">일요일</option>
+									</optgroup>
+									<optgroup label="담당자">
+										<option value="김민수">김민수</option>
+										<option value="이영희">이영희</option>
+										<option value="박철수">박철수</option>
+										<option value="정수진">정수진</option>
+									</optgroup>
+									<optgroup label="상담상태">
+										<option value="대기">대기</option>
+										<option value="처리중">처리중</option>
+										<option value="완료">완료</option>
+									</optgroup>
+									<optgroup label="이슈민감도">
+										<option value="낮음">낮음</option>
+										<option value="보통">보통</option>
+										<option value="높음">높음</option>
+									</optgroup>
 								</select>
 							</div>
 						</div>
@@ -384,17 +514,16 @@ function Dashboard() {
 							<p className="text-gray-600 dark:text-gray-400">
 								{tagFilter1 === '전체' && tagFilter2 === '전체' && '모든 상담 데이터'}
 								{tagFilter1 !== '전체' && tagFilter2 === '전체' && (
-									<><span className="font-semibold text-blue-600 dark:text-blue-400">{tagFilter1}</span> 태그 포함</>
+									<><span className="font-semibold text-blue-600 dark:text-blue-400">{tagFilter1}</span> 필터 적용</>
 								)}
 								{tagFilter1 === '전체' && tagFilter2 !== '전체' && (
-									<><span className="font-semibold text-purple-600 dark:text-purple-400">{tagFilter2}</span> 태그 포함</>
+									<><span className="font-semibold text-purple-600 dark:text-purple-400">{tagFilter2}</span> 필터 적용</>
 								)}
 								{tagFilter1 !== '전체' && tagFilter2 !== '전체' && (
 									<>
 										<span className="font-semibold text-blue-600 dark:text-blue-400">{tagFilter1}</span>
-										<span className="mx-1">AND</span>
+										<span className="mx-1 font-bold">AND</span>
 										<span className="font-semibold text-purple-600 dark:text-purple-400">{tagFilter2}</span>
-										<span className="ml-1">모두 포함</span>
 									</>
 								)}
 							</p>
@@ -491,18 +620,205 @@ function Dashboard() {
 				</div>
 
 				{/* Multi-Dimensional Analysis */}
-				<MultiDimensionAnalysis
-					availableDimensions={availableDimensions}
-					dimension1={dimension1}
-					setDimension1={setDimension1}
-					dimension2={dimension2}
-					setDimension2={setDimension2}
-					dimension3={dimension3}
-					setDimension3={setDimension3}
-					visualizationType={visualizationType}
-					setVisualizationType={setVisualizationType}
-					getCurrentDimensionData={getCurrentDimensionData}
-				/>
+				<div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+					<div className="mb-6">
+						<h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+							다차원 분석 (최대 3차원, GA4 스타일)
+						</h2>
+						
+						{/* Dimension Selectors - 3D */}
+						<div className="space-y-3 mb-4">
+							<div className="flex items-center gap-2">
+								<label className="text-sm text-gray-600 dark:text-gray-400 w-16">차원 1:</label>
+								<select 
+									value={dimension1}
+									onChange={(e) => setDimension1(e.target.value)}
+									className="flex-1 px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+								>
+									{availableDimensions.map(dim => (
+										<option key={dim} value={dim}>{dim}</option>
+									))}
+								</select>
+							</div>
+							
+							<div className="flex items-center gap-2">
+								<label className="text-sm text-gray-600 dark:text-gray-400 w-16">차원 2:</label>
+								<select 
+									value={dimension2}
+									onChange={(e) => setDimension2(e.target.value)}
+									className="flex-1 px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+								>
+									{availableDimensions.filter(d => d !== dimension1).map(dim => (
+										<option key={dim} value={dim}>{dim}</option>
+									))}
+								</select>
+							</div>
+							
+							<div className="flex items-center gap-2">
+								<label className="text-sm text-gray-600 dark:text-gray-400 w-16">차원 3:</label>
+								<select 
+									value={dimension3}
+									onChange={(e) => setDimension3(e.target.value)}
+									className="flex-1 px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
+								>
+									<option value="없음">없음 (2차원)</option>
+									{availableDimensions.filter(d => d !== dimension1 && d !== dimension2).map(dim => (
+										<option key={dim} value={dim}>{dim}</option>
+									))}
+								</select>
+							</div>
+						</div>
+						
+						{/* Visualization Type Selector (GA4 스타일) */}
+						<div className="flex items-center gap-3 mb-4">
+							<label className="text-sm text-gray-600 dark:text-gray-400">시각화:</label>
+							<div className="flex gap-2">
+								<button
+									onClick={() => setVisualizationType('막대그래프')}
+									className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+										visualizationType === '막대그래프'
+											? 'bg-blue-600 text-white shadow-md'
+											: 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+									}`}
+								>
+									📊 막대그래프
+								</button>
+								<button
+									onClick={() => setVisualizationType('히트맵')}
+									className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+										visualizationType === '히트맵'
+											? 'bg-blue-600 text-white shadow-md'
+											: 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+									}`}
+								>
+									🔥 히트맵
+								</button>
+								<button
+									onClick={() => setVisualizationType('표')}
+									className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+										visualizationType === '표'
+											? 'bg-blue-600 text-white shadow-md'
+											: 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+									}`}
+								>
+									📋 표
+								</button>
+							</div>
+						</div>
+						
+						{/* Info */}
+						<div className="text-xs text-gray-500 dark:text-gray-400 bg-blue-50 dark:bg-blue-900/20 px-3 py-2 rounded-lg">
+							{dimension3 === '없음' 
+								? `2차원 분석: ${dimension1} × ${dimension2}`
+								: `3차원 분석: ${dimension1} × ${dimension2} × ${dimension3} (중첩 구조)`
+							}
+							{getCurrentDimensionData().length > 0 && (
+								<span className="ml-2 font-semibold">
+									· 총 {getCurrentDimensionData().reduce((sum, item) => sum + item.total, 0)} 건
+								</span>
+							)}
+						</div>
+					</div>
+					
+					{/* Data Display - 시각화 타입별 렌더링 (GA4 스타일) */}
+					{getCurrentDimensionData().length > 0 ? (
+						<div className="space-y-4">
+							{visualizationType === '막대그래프' && getCurrentDimensionData().map((item, idx) => (
+								<div key={idx} className="space-y-3">
+									<div className="flex items-center justify-between pb-2 border-b border-gray-200 dark:border-gray-700">
+										<span className="text-sm font-semibold text-gray-900 dark:text-gray-100">{item.dimension1Value}</span>
+										<span className="text-lg font-bold text-blue-600 dark:text-blue-400">{item.total}</span>
+									</div>
+									<div className="space-y-2 pl-2">
+										{sortBreakdownEntries(Object.entries(item.breakdown), dimension2).map(([key, count], tagIdx) => {
+											const percentage = (count / item.total) * 100
+											return (
+												<div key={tagIdx}>
+													<div className="flex items-center gap-2">
+														<span className="text-xs text-gray-600 dark:text-gray-400 w-24 truncate">{key}</span>
+														<div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
+															<div className="bg-linear-to-r from-emerald-400 to-emerald-600 h-1.5 rounded-full" style={{ width: `${percentage}%` }} />
+														</div>
+														<span className="text-xs font-medium text-gray-700 dark:text-gray-300 w-8 text-right">{count}</span>
+														<span className="text-xs text-gray-500 dark:text-gray-400 w-12 text-right">{percentage.toFixed(1)}%</span>
+													</div>
+													{dimension3 !== '없음' && item.dimension3Breakdown && (
+														<div className="ml-8 mt-1 space-y-1">
+															{item.dimension3Breakdown.map((d3, d3Idx) => (
+																<div key={d3Idx} className="flex items-center gap-2 text-xs">
+																	<span className="text-gray-500 w-20 truncate">↳ {d3.value}</span>
+																	<div className="flex-1 bg-gray-100 dark:bg-gray-800 rounded-full h-1">
+																		<div className="bg-blue-400 h-1 rounded-full" style={{ width: `${(d3.count / count) * 100}%` }} />
+																	</div>
+																	<span className="text-gray-600 dark:text-gray-400 w-8 text-right">{d3.count}</span>
+																</div>
+															))}
+														</div>
+													)}
+												</div>
+											)
+										})}
+									</div>
+								</div>
+							))}
+							
+							{visualizationType === '히트맵' && getCurrentDimensionData().map((item, idx) => {
+								const maxValue = Math.max(...Object.values(item.breakdown))
+								return (
+									<div key={idx} className="space-y-2">
+										<div className="text-sm font-semibold text-gray-900 dark:text-gray-100">{item.dimension1Value}</div>
+										<div className="grid grid-cols-4 gap-2">
+											{sortBreakdownEntries(Object.entries(item.breakdown), dimension2).map(([key, count], tagIdx) => {
+												const intensity = (count / maxValue) * 100
+												const bgColor = intensity <= 20 ? 'bg-emerald-100' : intensity <= 40 ? 'bg-emerald-300' : intensity <= 60 ? 'bg-emerald-500' : intensity <= 80 ? 'bg-emerald-700' : 'bg-emerald-900'
+												return (
+													<div key={tagIdx} className={`${bgColor} p-3 rounded-lg hover:scale-105 cursor-pointer`} title={`${key}: ${count}건`}>
+														<div className="text-xs font-medium truncate">{key}</div>
+														<div className="text-lg font-bold mt-1">{count}</div>
+													</div>
+												)
+											})}
+										</div>
+									</div>
+								)
+							})}
+							
+							{visualizationType === '표' && (
+								<div className="overflow-x-auto">
+									<table className="w-full text-sm">
+										<thead className="bg-gray-100 dark:bg-gray-700">
+											<tr>
+												<th className="px-4 py-2 text-left font-semibold">{dimension1}</th>
+												<th className="px-4 py-2 text-left font-semibold">{dimension2}</th>
+												{dimension3 !== '없음' && <th className="px-4 py-2 text-left font-semibold">{dimension3}</th>}
+												<th className="px-4 py-2 text-right font-semibold">건수</th>
+												<th className="px-4 py-2 text-right font-semibold">비율</th>
+											</tr>
+										</thead>
+										<tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+											{getCurrentDimensionData().map((item, idx) => (
+												Object.entries(item.breakdown).map(([key, count], tagIdx) => (
+													<tr key={`${idx}-${tagIdx}`} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+														<td className="px-4 py-2 text-gray-900 dark:text-gray-100">{item.dimension1Value}</td>
+														<td className="px-4 py-2 text-gray-700 dark:text-gray-300">{key}</td>
+														{dimension3 !== '없음' && <td className="px-4 py-2 text-gray-600 dark:text-gray-400 text-xs">{item.dimension3Breakdown?.[0]?.value || '-'}</td>}
+														<td className="px-4 py-2 text-right font-medium">{count}</td>
+														<td className="px-4 py-2 text-right text-gray-600 dark:text-gray-400">{((count / item.total) * 100).toFixed(1)}%</td>
+													</tr>
+												))
+											))}
+										</tbody>
+									</table>
+								</div>
+							)}
+						</div>
+					) : (
+						<div className="text-center py-12">
+							<p className="text-gray-500 dark:text-gray-400 text-sm">해당 조합의 데이터가 없습니다.</p>
+							<p className="text-gray-400 dark:text-gray-500 text-xs mt-2">다른 차원 조합을 선택해주세요.</p>
+						</div>
+					)}
+				</div>
 			</div>
 
 			{/* Tag Trends */}
