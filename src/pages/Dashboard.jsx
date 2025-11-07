@@ -18,14 +18,58 @@ function Dashboard() {
 	// 태그별 히트맵 데이터 (최근 90일)
 	const [heatmapData, setHeatmapData] = useState([])
 	
-	// 유입 페이지 데이터
-	const [referrerData] = useState([
-		{ page: '/products/shoes', count: 342, percentage: 28.5 },
-		{ page: '/cart', count: 289, percentage: 24.1 },
-		{ page: '/products/bags', count: 198, percentage: 16.5 },
-		{ page: '/my-page', count: 156, percentage: 13.0 },
-		{ page: '/orders', count: 123, percentage: 10.2 },
-		{ page: '/기타', count: 92, percentage: 7.7 }
+	// 유입 페이지 x 태그 결합 데이터
+	const [referrerTagData] = useState([
+		{ 
+			page: '/products/shoes',
+			total: 342,
+			tags: {
+				'반품 및 교환': 142,
+				'상담': 98,
+				'사이즈': 67,
+				'색상': 35
+			}
+		},
+		{ 
+			page: '/cart',
+			total: 289,
+			tags: {
+				'결제': 128,
+				'구매': 89,
+				'배송': 52,
+				'쿠폰': 20
+			}
+		},
+		{ 
+			page: '/products/bags',
+			total: 198,
+			tags: {
+				'상담': 87,
+				'재입고': 54,
+				'반품 및 교환': 38,
+				'가격': 19
+			}
+		},
+		{ 
+			page: '/my-page',
+			total: 156,
+			tags: {
+				'회원': 78,
+				'포인트': 43,
+				'등급': 25,
+				'정보수정': 10
+			}
+		},
+		{ 
+			page: '/orders',
+			total: 123,
+			tags: {
+				'배송': 67,
+				'취소': 34,
+				'교환': 15,
+				'영수증': 7
+			}
+		}
 	])
 
 	// 태그별 트렌드 데이터 (최근 7일)
@@ -138,65 +182,6 @@ function Dashboard() {
 				</p>
 			</div>
 
-			{/* KPI Cards */}
-			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-				<div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-shadow">
-					<div className="flex items-center justify-between">
-						<div>
-							<p className="text-sm text-gray-600 dark:text-gray-400">총 상담 건수</p>
-							<p className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-2">
-								{kpiData.totalInquiries.toLocaleString()}
-							</p>
-						</div>
-						<div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
-							<span className="text-2xl">💬</span>
-						</div>
-					</div>
-				</div>
-
-				<div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-shadow">
-					<div className="flex items-center justify-between">
-						<div>
-							<p className="text-sm text-gray-600 dark:text-gray-400">평균 응답 시간</p>
-							<p className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-2">
-								{Math.floor(kpiData.avgResponseTime / 60)}m {kpiData.avgResponseTime % 60}s
-							</p>
-						</div>
-						<div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center">
-							<span className="text-2xl">⚡</span>
-						</div>
-					</div>
-				</div>
-
-				<div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-shadow">
-					<div className="flex items-center justify-between">
-						<div>
-							<p className="text-sm text-gray-600 dark:text-gray-400">평균 CSAT</p>
-							<p className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-2">
-								{kpiData.avgCSAT.toFixed(1)} ⭐
-							</p>
-						</div>
-						<div className="w-12 h-12 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-full flex items-center justify-center">
-							<span className="text-2xl">😊</span>
-						</div>
-					</div>
-				</div>
-
-				<div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-shadow">
-					<div className="flex items-center justify-between">
-						<div>
-							<p className="text-sm text-gray-600 dark:text-gray-400">상담 완료율</p>
-							<p className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-2">
-								{kpiData.completionRate}%
-							</p>
-						</div>
-						<div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center">
-							<span className="text-2xl">✅</span>
-						</div>
-					</div>
-				</div>
-			</div>
-
 			{/* Main Grid */}
 			<div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
 				{/* Tag Heatmap Calendar */}
@@ -248,30 +233,47 @@ function Dashboard() {
 					</div>
 				</div>
 
-				{/* Referrer Pages */}
+				{/* Referrer Pages x Tags */}
 				<div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
 					<h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6">
-						🔗 유입 페이지 분석
+						🔗 유입 페이지 × 태그 분석
 					</h2>
-					<div className="space-y-4">
-						{referrerData.map((ref, idx) => (
-							<div key={idx} className="space-y-2">
-								<div className="flex items-center justify-between text-sm">
-									<span className="text-gray-700 dark:text-gray-300 font-medium truncate" title={ref.page}>
+					<div className="space-y-6">
+						{referrerTagData.map((ref, idx) => (
+							<div key={idx} className="space-y-3">
+								{/* 페이지 헤더 */}
+								<div className="flex items-center justify-between pb-2 border-b border-gray-200 dark:border-gray-700">
+									<span className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate" title={ref.page}>
 										{ref.page}
 									</span>
-									<span className="text-gray-900 dark:text-gray-100 font-bold ml-2">
-										{ref.count}
+									<span className="text-lg font-bold text-blue-600 dark:text-blue-400 ml-2">
+										{ref.total}
 									</span>
 								</div>
-								<div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-									<div 
-										className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full transition-all"
-										style={{ width: `${ref.percentage}%` }}
-									/>
-								</div>
-								<div className="text-xs text-gray-500 dark:text-gray-400">
-									{ref.percentage}%
+								
+								{/* 태그별 분포 */}
+								<div className="space-y-2 pl-2">
+									{Object.entries(ref.tags)
+										.sort((a, b) => b[1] - a[1])
+										.map(([tag, count], tagIdx) => {
+											const percentage = (count / ref.total) * 100
+											return (
+												<div key={tagIdx} className="flex items-center gap-2">
+													<span className="text-xs text-gray-600 dark:text-gray-400 w-20 truncate" title={tag}>
+														{tag}
+													</span>
+													<div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
+														<div 
+															className="bg-gradient-to-r from-emerald-400 to-emerald-600 h-1.5 rounded-full transition-all"
+															style={{ width: `${percentage}%` }}
+														/>
+													</div>
+													<span className="text-xs font-medium text-gray-700 dark:text-gray-300 w-8 text-right">
+														{count}
+													</span>
+												</div>
+											)
+										})}
 								</div>
 							</div>
 						))}
@@ -318,7 +320,7 @@ function Dashboard() {
 			</div>
 
 			{/* Hot Keywords */}
-			<div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+			<div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700 mb-8">
 				<h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6">
 					🔥 이번 주 핫 키워드
 				</h2>
@@ -347,6 +349,39 @@ function Dashboard() {
 						))}
 					</div>
 				)}
+			</div>
+
+			{/* KPI Cards (Less Important - Bottom) */}
+			<div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+				<h2 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">
+					📈 부가 지표
+				</h2>
+				<div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+					<div className="text-center p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+						<p className="text-xs text-gray-600 dark:text-gray-400 mb-1">총 상담 건수</p>
+						<p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+							{kpiData.totalInquiries.toLocaleString()}
+						</p>
+					</div>
+					<div className="text-center p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+						<p className="text-xs text-gray-600 dark:text-gray-400 mb-1">평균 응답 시간</p>
+						<p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+							{Math.floor(kpiData.avgResponseTime / 60)}m {kpiData.avgResponseTime % 60}s
+						</p>
+					</div>
+					<div className="text-center p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+						<p className="text-xs text-gray-600 dark:text-gray-400 mb-1">평균 CSAT</p>
+						<p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+							{kpiData.avgCSAT.toFixed(1)} ⭐
+						</p>
+					</div>
+					<div className="text-center p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+						<p className="text-xs text-gray-600 dark:text-gray-400 mb-1">상담 완료율</p>
+						<p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+							{kpiData.completionRate}%
+						</p>
+					</div>
+				</div>
 			</div>
 		</div>
 	)
