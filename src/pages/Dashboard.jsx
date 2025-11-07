@@ -129,7 +129,9 @@ function Dashboard() {
 			'이슈민감도': ['낮음', '보통', '높음'],
 			'요일': ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'],
 			'시간대': ['09-11시', '11-13시', '13-15시', '15-17시', '17-19시'],
-			'상담상태': ['대기', '처리중', '완료']
+			'상담상태': ['대기', '처리중', '완료'],
+			'담당자': ['김민수', '이지은', '박서준', '정유진'],
+			'상담태그': ['배송', '교환', '반품', '재고', '결제', '이벤트', '기타', '고객유형']
 		}
 		
 		// 차원별 속성 매핑
@@ -189,8 +191,16 @@ function Dashboard() {
 				}
 			})
 			
-			// 차원2별로 그룹화
+			// 차원2별로 그룹화 (0건인 값도 포함)
 			const dim2Breakdown = {}
+			
+			// 차원2의 모든 가능한 값 초기화 (0건 표시용)
+			if (dimensionOrder[dimension2]) {
+				dimensionOrder[dimension2].forEach(value => {
+					dim2Breakdown[value] = 0
+				})
+			}
+			
 			filteredByDim1.forEach(inquiry => {
 				let dim2Value = inquiry[dim2Key]
 				
@@ -293,8 +303,9 @@ function Dashboard() {
 			'이슈민감도': ['낮음', '보통', '높음'],
 			'요일': ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'],
 			'시간대': ['09-11시', '11-13시', '13-15시', '15-17시', '17-19시'],
-			'고객등급': ['일반', 'SILVER', 'GOLD', 'VIP'],
-			'상담상태': ['대기', '처리중', '완료']
+			'상담상태': ['대기', '처리중', '완료'],
+			'담당자': ['김민수', '이지은', '박서준', '정유진'],
+			'상담태그': ['배송', '교환', '반품', '재고', '결제', '이벤트', '기타', '고객유형']
 		}
 		
 		if (dimensionOrder[dimensionName]) {
@@ -768,27 +779,33 @@ function Dashboard() {
 									<div className="space-y-2 pl-2">
 										{sortBreakdownEntries(Object.entries(item.breakdown), dimension2).map(([key, count], tagIdx) => {
 											const percentage = (count / item.total) * 100
+											// 0건일 때는 빈 바만 표시, 1건 이상일 때는 최소 2% 너비 보장
+											const displayWidth = count === 0 ? 0 : Math.max(percentage, 2)
 											return (
 												<div key={tagIdx}>
 													<div className="flex items-center gap-2">
 														<span className="text-xs text-gray-600 dark:text-gray-400 w-24 truncate">{key}</span>
 														<div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
-															<div className="bg-linear-to-r from-emerald-400 to-emerald-600 h-1.5 rounded-full" style={{ width: `${percentage}%` }} />
+															<div className="bg-linear-to-r from-emerald-400 to-emerald-600 h-1.5 rounded-full" style={{ width: `${displayWidth}%` }} />
 														</div>
 														<span className="text-xs font-medium text-gray-700 dark:text-gray-300 w-8 text-right">{count}</span>
 														<span className="text-xs text-gray-500 dark:text-gray-400 w-12 text-right">{percentage.toFixed(1)}%</span>
 													</div>
 													{dimension3 !== '없음' && item.dimension3Breakdown && (
 														<div className="ml-8 mt-1 space-y-1">
-															{item.dimension3Breakdown.map((d3, d3Idx) => (
-																<div key={d3Idx} className="flex items-center gap-2 text-xs">
-																	<span className="text-gray-500 w-20 truncate">↳ {d3.value}</span>
-																	<div className="flex-1 bg-gray-100 dark:bg-gray-800 rounded-full h-1">
-																		<div className="bg-blue-400 h-1 rounded-full" style={{ width: `${(d3.count / count) * 100}%` }} />
+															{item.dimension3Breakdown.map((d3, d3Idx) => {
+																const d3Percentage = (d3.count / count) * 100
+																const d3DisplayWidth = d3.count === 0 ? 0 : Math.max(d3Percentage, 2)
+																return (
+																	<div key={d3Idx} className="flex items-center gap-2 text-xs">
+																		<span className="text-gray-500 w-20 truncate">↳ {d3.value}</span>
+																		<div className="flex-1 bg-gray-100 dark:bg-gray-800 rounded-full h-1">
+																			<div className="bg-blue-400 h-1 rounded-full" style={{ width: `${d3DisplayWidth}%` }} />
+																		</div>
+																		<span className="text-gray-600 dark:text-gray-400 w-8 text-right">{d3.count}</span>
 																	</div>
-																	<span className="text-gray-600 dark:text-gray-400 w-8 text-right">{d3.count}</span>
-																</div>
-															))}
+																)
+															})}
 														</div>
 													)}
 												</div>
