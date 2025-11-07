@@ -4,32 +4,24 @@ import landpageBackground from "../assets/landpageBackground.png";
 export default function Home({ isDark = true }) {
   const navigate = useNavigate();
 
+  const containerStyle = isDark
+    ? {
+        background:
+          "radial-gradient(circle at 15% 0%, rgba(118, 98, 255, 0.28), transparent 40%), radial-gradient(circle at 85% -10%, rgba(92, 162, 255, 0.22), transparent 55%), linear-gradient(145deg, rgba(12, 15, 34, 0.96) 0%, rgba(16, 18, 39, 0.98) 65%, rgba(6, 8, 20, 1) 100%)",
+      }
+    : {
+        backgroundImage: `url(${landpageBackground})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center 30%",
+        backgroundRepeat: "no-repeat",
+      };
+
   return (
-    <div className="min-h-[calc(100vh-60px)] flex flex-col justify-center items-center pb-10 px-5 relative overflow-hidden">
-      {/* 배경 이미지 레이어 */}
-      <div
-        className="fixed inset-0"
-        style={{
-          backgroundImage: `url(${landpageBackground})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center 30%",
-          backgroundRepeat: "no-repeat",
-          filter: "blur(60px)",
-          transform: "scale(1.1)",
-          opacity: isDark ? 0.2 : 0.4,
-          zIndex: -2,
-        }}
-      />
-      {/* 어두운 오버레이 레이어 */}
-      <div
-        className="fixed inset-0"
-        style={{
-          backgroundColor: isDark ? "rgba(0, 0, 0, 0.7)" : "rgba(0, 0, 0, 0.1)",
-          zIndex: -1,
-        }}
-      />
-      {/* 콘텐츠 */}
-      <div className="relative z-10 flex flex-col items-center">
+    <div
+      className="min-h-[calc(100vh-60px)] flex flex-col justify-center items-center pb-10 px-5 relative overflow-hidden"
+      style={containerStyle}
+    >
+      <div className="relative flex flex-col items-center">
         <h1
           className={`text-[clamp(3rem,8vw,6rem)] font-bold m-0 mb-6 -tracking-[0.02em] text-center leading-[1.1] font-sans ${
             isDark ? "text-white" : "text-gray-900"
