@@ -5,20 +5,35 @@ import KPICards from '../components/dashboard/KPICards'
 import TagHeatmapCalendar from '../components/dashboard/TagHeatmapCalendar'
 import HotKeywords from '../components/dashboard/HotKeywords'
 
-// 유틸리티: timestamp에서 날짜/요일/시간대 유도
-const getDateFromTimestamp = (timestamp) => {
-	const date = new Date(timestamp)
-	return date.toISOString().split('T')[0] // YYYY-MM-DD
+// 유틸리티: ISO 8601 또는 timestamp에서 날짜/요일/시간대 유도
+const parseCreatedAt = (createdAt) => {
+	// ISO 8601 문자열이면 Date 객체로 변환
+	if (typeof createdAt === 'string') {
+		return new Date(createdAt)
+	}
+	// 숫자(timestamp)면 그대로 Date 객체로 변환
+	if (typeof createdAt === 'number') {
+		return new Date(createdAt)
+	}
+	return new Date()
 }
 
-const getWeekdayFromTimestamp = (timestamp) => {
-	const date = new Date(timestamp)
+const getDateFromCreatedAt = (createdAt) => {
+	const date = parseCreatedAt(createdAt)
+	const year = date.getFullYear()
+	const month = String(date.getMonth() + 1).padStart(2, '0')
+	const day = String(date.getDate()).padStart(2, '0')
+	return `${year}-${month}-${day}` // YYYY-MM-DD (로컬 시간 기준)
+}
+
+const getWeekdayFromCreatedAt = (createdAt) => {
+	const date = parseCreatedAt(createdAt)
 	return date.toLocaleDateString('ko-KR', { weekday: 'long' })
 }
 
-const getTimeSlotFromTimestamp = (timestamp) => {
-	const date = new Date(timestamp)
-	const hour = date.getHours()
+const getTimeSlotFromCreatedAt = (createdAt) => {
+	const date = parseCreatedAt(createdAt)
+	const hour = date.getHours() // 로컬 시간 사용
 	
 	if (hour >= 9 && hour < 11) return '09-11시'
 	if (hour >= 11 && hour < 13) return '11-13시'
@@ -32,9 +47,9 @@ const getTimeSlotFromTimestamp = (timestamp) => {
 // inquiryData에 유도 속성 추가 (date, weekday, timeSlot)
 const inquiryData = mockInquiryData.map(inquiry => ({
 	...inquiry,
-	date: getDateFromTimestamp(inquiry.createdAt),
-	weekday: getWeekdayFromTimestamp(inquiry.createdAt),
-	timeSlot: getTimeSlotFromTimestamp(inquiry.createdAt)
+	date: getDateFromCreatedAt(inquiry.createdAt),
+	weekday: getWeekdayFromCreatedAt(inquiry.createdAt),
+	timeSlot: getTimeSlotFromCreatedAt(inquiry.createdAt)
 }))
 
 function Dashboard() {

@@ -9,7 +9,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1759881600000
+		createdAt: "2025-10-08T00:00:00.000Z"
 	},
 	{
 		id: 2,
@@ -20,7 +20,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1759888800000
+		createdAt: "2025-10-08T02:00:00.000Z"
 	},
 	{
 		id: 3,
@@ -31,7 +31,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1759896000000
+		createdAt: "2025-10-08T04:00:00.000Z"
 	},
 	{
 		id: 4,
@@ -42,7 +42,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1759903200000
+		createdAt: "2025-10-08T06:00:00.000Z"
 	},
 	{
 		id: 5,
@@ -53,7 +53,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1759888800000
+		createdAt: "2025-10-08T02:00:00.000Z"
 	},
 	{
 		id: 6,
@@ -64,7 +64,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1759910400000
+		createdAt: "2025-10-08T08:00:00.000Z"
 	},
 	{
 		id: 7,
@@ -75,7 +75,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1759881600000
+		createdAt: "2025-10-08T00:00:00.000Z"
 	},
 	{
 		id: 8,
@@ -86,7 +86,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1759896000000
+		createdAt: "2025-10-08T04:00:00.000Z"
 	},
 	{
 		id: 9,
@@ -97,7 +97,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1759968000000
+		createdAt: "2025-10-09T00:00:00.000Z"
 	},
 	{
 		id: 10,
@@ -108,7 +108,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1759968000000
+		createdAt: "2025-10-09T00:00:00.000Z"
 	},
 	{
 		id: 11,
@@ -119,7 +119,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1759975200000
+		createdAt: "2025-10-09T02:00:00.000Z"
 	},
 	{
 		id: 12,
@@ -130,7 +130,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1759982400000
+		createdAt: "2025-10-09T04:00:00.000Z"
 	},
 	{
 		id: 13,
@@ -141,7 +141,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1759989600000
+		createdAt: "2025-10-09T06:00:00.000Z"
 	},
 	{
 		id: 14,
@@ -152,7 +152,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1759975200000
+		createdAt: "2025-10-09T02:00:00.000Z"
 	},
 	{
 		id: 15,
@@ -163,7 +163,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1759982400000
+		createdAt: "2025-10-09T04:00:00.000Z"
 	},
 	{
 		id: 16,
@@ -174,7 +174,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "처리중",
 		sensitivity: "보통",
-		createdAt: 1759989600000
+		createdAt: "2025-10-09T06:00:00.000Z"
 	},
 	{
 		id: 17,
@@ -185,7 +185,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1759996800000
+		createdAt: "2025-10-09T08:00:00.000Z"
 	},
 	{
 		id: 18,
@@ -196,7 +196,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1760054400000
+		createdAt: "2025-10-10T00:00:00.000Z"
 	},
 	{
 		id: 19,
@@ -207,7 +207,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1760054400000
+		createdAt: "2025-10-10T00:00:00.000Z"
 	},
 	{
 		id: 20,
@@ -218,7 +218,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "높음",
-		createdAt: 1760061600000
+		createdAt: "2025-10-10T02:00:00.000Z"
 	},
 	{
 		id: 21,
@@ -229,7 +229,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1760068800000
+		createdAt: "2025-10-10T04:00:00.000Z"
 	},
 	{
 		id: 22,
@@ -239,7 +239,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1760076000000
+		createdAt: "2025-10-10T06:00:00.000Z"
 	},
 	{
 		id: 23,
@@ -250,7 +250,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1760083200000
+		createdAt: "2025-10-10T08:00:00.000Z"
 	},
 	{
 		id: 24,
@@ -261,7 +261,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1760061600000
+		createdAt: "2025-10-10T02:00:00.000Z"
 	},
 	{
 		id: 25,
@@ -272,7 +272,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1760155200000
+		createdAt: "2025-10-11T04:00:00.000Z"
 	},
 	{
 		id: 26,
@@ -283,7 +283,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1760162400000
+		createdAt: "2025-10-11T06:00:00.000Z"
 	},
 	{
 		id: 27,
@@ -294,7 +294,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1760140800000
+		createdAt: "2025-10-11T00:00:00.000Z"
 	},
 	{
 		id: 28,
@@ -305,7 +305,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "대기",
 		sensitivity: "보통",
-		createdAt: 1760169600000
+		createdAt: "2025-10-11T08:00:00.000Z"
 	},
 	{
 		id: 29,
@@ -316,7 +316,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1760400000000
+		createdAt: "2025-10-14T00:00:00.000Z"
 	},
 	{
 		id: 30,
@@ -327,7 +327,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1760400000000
+		createdAt: "2025-10-14T00:00:00.000Z"
 	},
 	{
 		id: 31,
@@ -338,7 +338,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1760407200000
+		createdAt: "2025-10-14T02:00:00.000Z"
 	},
 	{
 		id: 32,
@@ -349,7 +349,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "처리중",
 		sensitivity: "보통",
-		createdAt: 1760407200000
+		createdAt: "2025-10-14T02:00:00.000Z"
 	},
 	{
 		id: 33,
@@ -360,7 +360,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1760414400000
+		createdAt: "2025-10-14T04:00:00.000Z"
 	},
 	{
 		id: 34,
@@ -371,7 +371,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1760414400000
+		createdAt: "2025-10-14T04:00:00.000Z"
 	},
 	{
 		id: 35,
@@ -382,7 +382,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "높음",
-		createdAt: 1760421600000
+		createdAt: "2025-10-14T06:00:00.000Z"
 	},
 	{
 		id: 36,
@@ -393,7 +393,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1760421600000
+		createdAt: "2025-10-14T06:00:00.000Z"
 	},
 	{
 		id: 37,
@@ -404,7 +404,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1760400000000
+		createdAt: "2025-10-14T00:00:00.000Z"
 	},
 	{
 		id: 38,
@@ -414,7 +414,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "처리중",
 		sensitivity: "보통",
-		createdAt: 1760428800000
+		createdAt: "2025-10-14T08:00:00.000Z"
 	},
 	{
 		id: 39,
@@ -425,7 +425,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1760493600000
+		createdAt: "2025-10-15T02:00:00.000Z"
 	},
 	{
 		id: 40,
@@ -436,7 +436,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1760500800000
+		createdAt: "2025-10-15T04:00:00.000Z"
 	},
 	{
 		id: 41,
@@ -447,7 +447,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "높음",
-		createdAt: 1760508000000
+		createdAt: "2025-10-15T06:00:00.000Z"
 	},
 	{
 		id: 42,
@@ -458,7 +458,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "대기",
 		sensitivity: "낮음",
-		createdAt: 1760515200000
+		createdAt: "2025-10-15T08:00:00.000Z"
 	},
 	{
 		id: 43,
@@ -469,7 +469,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1761004800000
+		createdAt: "2025-10-21T00:00:00.000Z"
 	},
 	{
 		id: 44,
@@ -480,7 +480,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1761004800000
+		createdAt: "2025-10-21T00:00:00.000Z"
 	},
 	{
 		id: 45,
@@ -491,7 +491,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1761012000000
+		createdAt: "2025-10-21T02:00:00.000Z"
 	},
 	{
 		id: 46,
@@ -502,7 +502,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1761019200000
+		createdAt: "2025-10-21T04:00:00.000Z"
 	},
 	{
 		id: 47,
@@ -513,7 +513,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "처리중",
 		sensitivity: "낮음",
-		createdAt: 1761026400000
+		createdAt: "2025-10-21T06:00:00.000Z"
 	},
 	{
 		id: 48,
@@ -524,7 +524,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1761012000000
+		createdAt: "2025-10-21T02:00:00.000Z"
 	},
 	{
 		id: 49,
@@ -535,7 +535,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1761019200000
+		createdAt: "2025-10-21T04:00:00.000Z"
 	},
 	{
 		id: 50,
@@ -546,7 +546,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1761026400000
+		createdAt: "2025-10-21T06:00:00.000Z"
 	},
 	{
 		id: 51,
@@ -557,7 +557,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1761033600000
+		createdAt: "2025-10-21T08:00:00.000Z"
 	},
 	{
 		id: 52,
@@ -568,7 +568,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "높음",
-		createdAt: 1761033600000
+		createdAt: "2025-10-21T08:00:00.000Z"
 	},
 	{
 		id: 53,
@@ -579,7 +579,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1761436800000
+		createdAt: "2025-10-26T00:00:00.000Z"
 	},
 	{
 		id: 54,
@@ -590,7 +590,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1761436800000
+		createdAt: "2025-10-26T00:00:00.000Z"
 	},
 	{
 		id: 55,
@@ -601,7 +601,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "처리중",
 		sensitivity: "보통",
-		createdAt: 1761444000000
+		createdAt: "2025-10-26T02:00:00.000Z"
 	},
 	{
 		id: 56,
@@ -612,7 +612,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1761444000000
+		createdAt: "2025-10-26T02:00:00.000Z"
 	},
 	{
 		id: 57,
@@ -623,7 +623,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1761624000000
+		createdAt: "2025-10-28T04:00:00.000Z"
 	},
 	{
 		id: 58,
@@ -634,7 +634,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1761624000000
+		createdAt: "2025-10-28T04:00:00.000Z"
 	},
 	{
 		id: 59,
@@ -645,7 +645,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1761631200000
+		createdAt: "2025-10-28T06:00:00.000Z"
 	},
 	{
 		id: 60,
@@ -655,7 +655,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1761631200000
+		createdAt: "2025-10-28T06:00:00.000Z"
 	},
 	{
 		id: 61,
@@ -666,7 +666,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1761638400000
+		createdAt: "2025-10-28T08:00:00.000Z"
 	},
 	{
 		id: 62,
@@ -677,7 +677,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1761609600000
+		createdAt: "2025-10-28T00:00:00.000Z"
 	},
 	{
 		id: 63,
@@ -688,7 +688,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1761616800000
+		createdAt: "2025-10-28T02:00:00.000Z"
 	},
 	{
 		id: 64,
@@ -699,7 +699,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "대기",
 		sensitivity: "보통",
-		createdAt: 1761638400000
+		createdAt: "2025-10-28T08:00:00.000Z"
 	},
 	{
 		id: 65,
@@ -710,7 +710,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1761955200000
+		createdAt: "2025-11-01T00:00:00.000Z"
 	},
 	{
 		id: 66,
@@ -721,7 +721,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1761955200000
+		createdAt: "2025-11-01T00:00:00.000Z"
 	},
 	{
 		id: 67,
@@ -732,7 +732,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1761962400000
+		createdAt: "2025-11-01T02:00:00.000Z"
 	},
 	{
 		id: 68,
@@ -743,7 +743,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1761969600000
+		createdAt: "2025-11-01T04:00:00.000Z"
 	},
 	{
 		id: 69,
@@ -753,7 +753,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1761976800000
+		createdAt: "2025-11-01T06:00:00.000Z"
 	},
 	{
 		id: 70,
@@ -764,7 +764,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1761984000000
+		createdAt: "2025-11-01T08:00:00.000Z"
 	},
 	{
 		id: 71,
@@ -775,7 +775,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1761962400000
+		createdAt: "2025-11-01T02:00:00.000Z"
 	},
 	{
 		id: 72,
@@ -786,7 +786,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1761969600000
+		createdAt: "2025-11-01T04:00:00.000Z"
 	},
 	{
 		id: 73,
@@ -797,7 +797,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1761976800000
+		createdAt: "2025-11-01T06:00:00.000Z"
 	},
 	{
 		id: 74,
@@ -808,7 +808,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1761955200000
+		createdAt: "2025-11-01T00:00:00.000Z"
 	},
 	{
 		id: 78,
@@ -819,7 +819,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1762214400000
+		createdAt: "2025-11-04T00:00:00.000Z"
 	},
 	{
 		id: 79,
@@ -830,7 +830,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1762214400000
+		createdAt: "2025-11-04T00:00:00.000Z"
 	},
 	{
 		id: 80,
@@ -841,7 +841,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "처리중",
 		sensitivity: "보통",
-		createdAt: 1762221600000
+		createdAt: "2025-11-04T02:00:00.000Z"
 	},
 	{
 		id: 81,
@@ -852,7 +852,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1762221600000
+		createdAt: "2025-11-04T02:00:00.000Z"
 	},
 	{
 		id: 82,
@@ -863,7 +863,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1762228800000
+		createdAt: "2025-11-04T04:00:00.000Z"
 	},
 	{
 		id: 83,
@@ -874,7 +874,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1762228800000
+		createdAt: "2025-11-04T04:00:00.000Z"
 	},
 	{
 		id: 84,
@@ -885,7 +885,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1762236000000
+		createdAt: "2025-11-04T06:00:00.000Z"
 	},
 	{
 		id: 85,
@@ -896,7 +896,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1762236000000
+		createdAt: "2025-11-04T06:00:00.000Z"
 	},
 	{
 		id: 86,
@@ -907,7 +907,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1762243200000
+		createdAt: "2025-11-04T08:00:00.000Z"
 	},
 	{
 		id: 87,
@@ -918,7 +918,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1762214400000
+		createdAt: "2025-11-04T00:00:00.000Z"
 	},
 	{
 		id: 89,
@@ -929,7 +929,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1762300800000
+		createdAt: "2025-11-05T00:00:00.000Z"
 	},
 	{
 		id: 90,
@@ -940,7 +940,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1762308000000
+		createdAt: "2025-11-05T02:00:00.000Z"
 	},
 	{
 		id: 91,
@@ -951,7 +951,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "처리중",
 		sensitivity: "보통",
-		createdAt: 1762322400000
+		createdAt: "2025-11-05T06:00:00.000Z"
 	},
 	{
 		id: 92,
@@ -961,7 +961,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1762329600000
+		createdAt: "2025-11-05T08:00:00.000Z"
 	},
 	{
 		id: 93,
@@ -972,7 +972,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1762315200000
+		createdAt: "2025-11-05T04:00:00.000Z"
 	},
 	{
 		id: 94,
@@ -983,7 +983,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1762322400000
+		createdAt: "2025-11-05T06:00:00.000Z"
 	},
 	{
 		id: 95,
@@ -994,7 +994,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1762300800000
+		createdAt: "2025-11-05T00:00:00.000Z"
 	},
 	{
 		id: 96,
@@ -1005,7 +1005,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1762308000000
+		createdAt: "2025-11-05T02:00:00.000Z"
 	},
 	{
 		id: 97,
@@ -1016,7 +1016,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1762315200000
+		createdAt: "2025-11-05T04:00:00.000Z"
 	},
 	{
 		id: 98,
@@ -1027,7 +1027,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "대기",
 		sensitivity: "보통",
-		createdAt: 1762329600000
+		createdAt: "2025-11-05T08:00:00.000Z"
 	},
 	{
 		id: 99,
@@ -1038,7 +1038,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1762387200000
+		createdAt: "2025-11-06T00:00:00.000Z"
 	},
 	{
 		id: 100,
@@ -1049,7 +1049,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1762387200000
+		createdAt: "2025-11-06T00:00:00.000Z"
 	},
 	{
 		id: 101,
@@ -1060,7 +1060,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1762394400000
+		createdAt: "2025-11-06T02:00:00.000Z"
 	},
 	{
 		id: 102,
@@ -1071,7 +1071,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1762401600000
+		createdAt: "2025-11-06T04:00:00.000Z"
 	},
 	{
 		id: 103,
@@ -1081,7 +1081,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1762408800000
+		createdAt: "2025-11-06T06:00:00.000Z"
 	},
 	{
 		id: 104,
@@ -1092,7 +1092,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1762394400000
+		createdAt: "2025-11-06T02:00:00.000Z"
 	},
 	{
 		id: 105,
@@ -1103,7 +1103,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1762408800000
+		createdAt: "2025-11-06T06:00:00.000Z"
 	},
 	{
 		id: 106,
@@ -1114,7 +1114,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1762416000000
+		createdAt: "2025-11-06T08:00:00.000Z"
 	},
 	{
 		id: 107,
@@ -1125,7 +1125,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "처리중",
 		sensitivity: "보통",
-		createdAt: 1762401600000
+		createdAt: "2025-11-06T04:00:00.000Z"
 	},
 	{
 		id: 108,
@@ -1135,7 +1135,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1762408800000
+		createdAt: "2025-11-06T06:00:00.000Z"
 	},
 	{
 		id: 111,
@@ -1146,7 +1146,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1762473600000
+		createdAt: "2025-11-07T00:00:00.000Z"
 	},
 	{
 		id: 112,
@@ -1157,7 +1157,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1762473600000
+		createdAt: "2025-11-07T00:00:00.000Z"
 	},
 	{
 		id: 113,
@@ -1168,7 +1168,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1762480800000
+		createdAt: "2025-11-07T02:00:00.000Z"
 	},
 	{
 		id: 114,
@@ -1179,7 +1179,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "높음",
-		createdAt: 1762488000000
+		createdAt: "2025-11-07T04:00:00.000Z"
 	},
 	{
 		id: 115,
@@ -1189,7 +1189,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1762495200000
+		createdAt: "2025-11-07T06:00:00.000Z"
 	},
 	{
 		id: 116,
@@ -1200,7 +1200,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1762502400000
+		createdAt: "2025-11-07T08:00:00.000Z"
 	},
 	{
 		id: 117,
@@ -1211,7 +1211,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1762480800000
+		createdAt: "2025-11-07T02:00:00.000Z"
 	},
 	{
 		id: 118,
@@ -1222,7 +1222,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1762488000000
+		createdAt: "2025-11-07T04:00:00.000Z"
 	},
 	{
 		id: 119,
@@ -1233,7 +1233,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1762495200000
+		createdAt: "2025-11-07T06:00:00.000Z"
 	},
 	{
 		id: 120,
@@ -1244,7 +1244,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "높음",
-		createdAt: 1762473600000
+		createdAt: "2025-11-07T00:00:00.000Z"
 	},
 	{
 		id: 126,
@@ -1255,7 +1255,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1760140800000
+		createdAt: "2025-10-11T00:00:00.000Z"
 	},
 	{
 		id: 127,
@@ -1266,7 +1266,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1760148000000
+		createdAt: "2025-10-11T02:00:00.000Z"
 	},
 	{
 		id: 128,
@@ -1277,7 +1277,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1760227200000
+		createdAt: "2025-10-12T00:00:00.000Z"
 	},
 	{
 		id: 129,
@@ -1288,7 +1288,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1760241600000
+		createdAt: "2025-10-12T04:00:00.000Z"
 	},
 	{
 		id: 130,
@@ -1299,7 +1299,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1760313600000
+		createdAt: "2025-10-13T00:00:00.000Z"
 	},
 	{
 		id: 131,
@@ -1310,7 +1310,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "높음",
-		createdAt: 1760493600000
+		createdAt: "2025-10-15T02:00:00.000Z"
 	},
 	{
 		id: 132,
@@ -1321,7 +1321,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1760500800000
+		createdAt: "2025-10-15T04:00:00.000Z"
 	},
 	{
 		id: 133,
@@ -1332,7 +1332,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1760508000000
+		createdAt: "2025-10-15T06:00:00.000Z"
 	},
 	{
 		id: 134,
@@ -1343,7 +1343,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "높음",
-		createdAt: 1760572800000
+		createdAt: "2025-10-16T00:00:00.000Z"
 	},
 	{
 		id: 135,
@@ -1354,7 +1354,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1760580000000
+		createdAt: "2025-10-16T02:00:00.000Z"
 	},
 	{
 		id: 136,
@@ -1365,7 +1365,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1760594400000
+		createdAt: "2025-10-16T06:00:00.000Z"
 	},
 	{
 		id: 137,
@@ -1376,7 +1376,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1760659200000
+		createdAt: "2025-10-17T00:00:00.000Z"
 	},
 	{
 		id: 138,
@@ -1387,7 +1387,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "높음",
-		createdAt: 1760666400000
+		createdAt: "2025-10-17T02:00:00.000Z"
 	},
 	{
 		id: 139,
@@ -1398,7 +1398,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1760673600000
+		createdAt: "2025-10-17T04:00:00.000Z"
 	},
 	{
 		id: 140,
@@ -1409,7 +1409,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "처리중",
 		sensitivity: "보통",
-		createdAt: 1760680800000
+		createdAt: "2025-10-17T06:00:00.000Z"
 	},
 	{
 		id: 141,
@@ -1420,7 +1420,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1760745600000
+		createdAt: "2025-10-18T00:00:00.000Z"
 	},
 	{
 		id: 142,
@@ -1431,7 +1431,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1760752800000
+		createdAt: "2025-10-18T02:00:00.000Z"
 	},
 	{
 		id: 143,
@@ -1441,7 +1441,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1760760000000
+		createdAt: "2025-10-18T04:00:00.000Z"
 	},
 	{
 		id: 144,
@@ -1452,7 +1452,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1760767200000
+		createdAt: "2025-10-18T06:00:00.000Z"
 	},
 	{
 		id: 145,
@@ -1463,7 +1463,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1760832000000
+		createdAt: "2025-10-19T00:00:00.000Z"
 	},
 	{
 		id: 146,
@@ -1474,7 +1474,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1760846400000
+		createdAt: "2025-10-19T04:00:00.000Z"
 	},
 	{
 		id: 147,
@@ -1485,7 +1485,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1760925600000
+		createdAt: "2025-10-20T02:00:00.000Z"
 	},
 	{
 		id: 148,
@@ -1496,7 +1496,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1761091200000
+		createdAt: "2025-10-22T00:00:00.000Z"
 	},
 	{
 		id: 149,
@@ -1507,7 +1507,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1761098400000
+		createdAt: "2025-10-22T02:00:00.000Z"
 	},
 	{
 		id: 150,
@@ -1518,7 +1518,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1761112800000
+		createdAt: "2025-10-22T06:00:00.000Z"
 	},
 	{
 		id: 151,
@@ -1529,7 +1529,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1761177600000
+		createdAt: "2025-10-23T00:00:00.000Z"
 	},
 	{
 		id: 152,
@@ -1540,7 +1540,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1761184800000
+		createdAt: "2025-10-23T02:00:00.000Z"
 	},
 	{
 		id: 153,
@@ -1551,7 +1551,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1761192000000
+		createdAt: "2025-10-23T04:00:00.000Z"
 	},
 	{
 		id: 154,
@@ -1562,7 +1562,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1761264000000
+		createdAt: "2025-10-24T00:00:00.000Z"
 	},
 	{
 		id: 155,
@@ -1573,7 +1573,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1761271200000
+		createdAt: "2025-10-24T02:00:00.000Z"
 	},
 	{
 		id: 156,
@@ -1584,7 +1584,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1761278400000
+		createdAt: "2025-10-24T04:00:00.000Z"
 	},
 	{
 		id: 157,
@@ -1595,7 +1595,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "처리중",
 		sensitivity: "낮음",
-		createdAt: 1761285600000
+		createdAt: "2025-10-24T06:00:00.000Z"
 	},
 	{
 		id: 158,
@@ -1606,7 +1606,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1761350400000
+		createdAt: "2025-10-25T00:00:00.000Z"
 	},
 	{
 		id: 159,
@@ -1617,7 +1617,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1761357600000
+		createdAt: "2025-10-25T02:00:00.000Z"
 	},
 	{
 		id: 160,
@@ -1627,7 +1627,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1761364800000
+		createdAt: "2025-10-25T04:00:00.000Z"
 	},
 	{
 		id: 161,
@@ -1638,7 +1638,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1761372000000
+		createdAt: "2025-10-25T06:00:00.000Z"
 	},
 	{
 		id: 162,
@@ -1649,7 +1649,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1761436800000
+		createdAt: "2025-10-26T00:00:00.000Z"
 	},
 	{
 		id: 163,
@@ -1660,7 +1660,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1761451200000
+		createdAt: "2025-10-26T04:00:00.000Z"
 	},
 	{
 		id: 164,
@@ -1671,7 +1671,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1761530400000
+		createdAt: "2025-10-27T02:00:00.000Z"
 	},
 	{
 		id: 165,
@@ -1682,7 +1682,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1761696000000
+		createdAt: "2025-10-29T00:00:00.000Z"
 	},
 	{
 		id: 166,
@@ -1693,7 +1693,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1761703200000
+		createdAt: "2025-10-29T02:00:00.000Z"
 	},
 	{
 		id: 167,
@@ -1704,7 +1704,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1761717600000
+		createdAt: "2025-10-29T06:00:00.000Z"
 	},
 	{
 		id: 168,
@@ -1715,7 +1715,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1761782400000
+		createdAt: "2025-10-30T00:00:00.000Z"
 	},
 	{
 		id: 169,
@@ -1726,7 +1726,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1761789600000
+		createdAt: "2025-10-30T02:00:00.000Z"
 	},
 	{
 		id: 170,
@@ -1737,7 +1737,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1761796800000
+		createdAt: "2025-10-30T04:00:00.000Z"
 	},
 	{
 		id: 171,
@@ -1748,7 +1748,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1761868800000
+		createdAt: "2025-10-31T00:00:00.000Z"
 	},
 	{
 		id: 172,
@@ -1759,7 +1759,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1761876000000
+		createdAt: "2025-10-31T02:00:00.000Z"
 	},
 	{
 		id: 173,
@@ -1770,7 +1770,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1761883200000
+		createdAt: "2025-10-31T04:00:00.000Z"
 	},
 	{
 		id: 174,
@@ -1780,7 +1780,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "처리중",
 		sensitivity: "높음",
-		createdAt: 1761897600000
+		createdAt: "2025-10-31T08:00:00.000Z"
 	},
 	{
 		id: 175,
@@ -1791,7 +1791,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1762041600000
+		createdAt: "2025-11-02T00:00:00.000Z"
 	},
 	{
 		id: 176,
@@ -1802,7 +1802,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1762056000000
+		createdAt: "2025-11-02T04:00:00.000Z"
 	},
 	{
 		id: 177,
@@ -1813,7 +1813,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1762135200000
+		createdAt: "2025-11-03T02:00:00.000Z"
 	},
 	{
 		id: 178,
@@ -1824,7 +1824,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1762149600000
+		createdAt: "2025-11-03T06:00:00.000Z"
 	},
 	{
 		id: 179,
@@ -1835,7 +1835,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "높음",
-		createdAt: 1757289600000
+		createdAt: "2025-09-08T00:00:00.000Z"
 	},
 	{
 		id: 180,
@@ -1846,7 +1846,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1757304000000
+		createdAt: "2025-09-08T04:00:00.000Z"
 	},
 	{
 		id: 181,
@@ -1857,7 +1857,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1757383200000
+		createdAt: "2025-09-09T02:00:00.000Z"
 	},
 	{
 		id: 182,
@@ -1868,7 +1868,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1757484000000
+		createdAt: "2025-09-10T06:00:00.000Z"
 	},
 	{
 		id: 183,
@@ -1879,7 +1879,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1757635200000
+		createdAt: "2025-09-12T00:00:00.000Z"
 	},
 	{
 		id: 184,
@@ -1890,7 +1890,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1757649600000
+		createdAt: "2025-09-12T04:00:00.000Z"
 	},
 	{
 		id: 185,
@@ -1901,7 +1901,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1757894400000
+		createdAt: "2025-09-15T00:00:00.000Z"
 	},
 	{
 		id: 186,
@@ -1912,7 +1912,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1757988000000
+		createdAt: "2025-09-16T02:00:00.000Z"
 	},
 	{
 		id: 187,
@@ -1923,7 +1923,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1758153600000
+		createdAt: "2025-09-18T00:00:00.000Z"
 	},
 	{
 		id: 188,
@@ -1934,7 +1934,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1758254400000
+		createdAt: "2025-09-19T04:00:00.000Z"
 	},
 	{
 		id: 189,
@@ -1945,7 +1945,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1758261600000
+		createdAt: "2025-09-19T06:00:00.000Z"
 	},
 	{
 		id: 190,
@@ -1956,7 +1956,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "높음",
-		createdAt: 1758585600000
+		createdAt: "2025-09-23T00:00:00.000Z"
 	},
 	{
 		id: 191,
@@ -1967,7 +1967,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1758679200000
+		createdAt: "2025-09-24T02:00:00.000Z"
 	},
 	{
 		id: 192,
@@ -1978,7 +1978,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1758758400000
+		createdAt: "2025-09-25T00:00:00.000Z"
 	},
 	{
 		id: 193,
@@ -1989,7 +1989,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "높음",
-		createdAt: 1758859200000
+		createdAt: "2025-09-26T04:00:00.000Z"
 	},
 	{
 		id: 194,
@@ -2000,7 +2000,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1758866400000
+		createdAt: "2025-09-26T06:00:00.000Z"
 	},
 	{
 		id: 195,
@@ -2011,7 +2011,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1759104000000
+		createdAt: "2025-09-29T00:00:00.000Z"
 	},
 	{
 		id: 196,
@@ -2022,7 +2022,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1759197600000
+		createdAt: "2025-09-30T02:00:00.000Z"
 	},
 	{
 		id: 197,
@@ -2033,7 +2033,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1759276800000
+		createdAt: "2025-10-01T00:00:00.000Z"
 	},
 	{
 		id: 198,
@@ -2044,7 +2044,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1759377600000
+		createdAt: "2025-10-02T04:00:00.000Z"
 	},
 	{
 		id: 199,
@@ -2055,7 +2055,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1759449600000
+		createdAt: "2025-10-03T00:00:00.000Z"
 	},
 	{
 		id: 200,
@@ -2066,7 +2066,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1759456800000
+		createdAt: "2025-10-03T02:00:00.000Z"
 	},
 	{
 		id: 201,
@@ -2077,7 +2077,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1759708800000
+		createdAt: "2025-10-06T00:00:00.000Z"
 	},
 	{
 		id: 202,
@@ -2088,7 +2088,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1759802400000
+		createdAt: "2025-10-07T02:00:00.000Z"
 	},
 	{
 		id: 203,
@@ -2099,7 +2099,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1759816800000
+		createdAt: "2025-10-07T06:00:00.000Z"
 	},
 	{
 		id: 204,
@@ -2110,7 +2110,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "높음",
-		createdAt: 1757548800000
+		createdAt: "2025-09-11T00:00:00.000Z"
 	},
 	{
 		id: 205,
@@ -2121,7 +2121,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1757736000000
+		createdAt: "2025-09-13T04:00:00.000Z"
 	},
 	{
 		id: 206,
@@ -2132,7 +2132,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1758074400000
+		createdAt: "2025-09-17T02:00:00.000Z"
 	},
 	{
 		id: 207,
@@ -2143,7 +2143,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1758348000000
+		createdAt: "2025-09-20T06:00:00.000Z"
 	},
 	{
 		id: 208,
@@ -2154,7 +2154,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1758499200000
+		createdAt: "2025-09-22T00:00:00.000Z"
 	},
 	{
 		id: 209,
@@ -2165,7 +2165,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1758945600000
+		createdAt: "2025-09-27T04:00:00.000Z"
 	},
 	{
 		id: 210,
@@ -2176,7 +2176,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1759536000000
+		createdAt: "2025-10-04T00:00:00.000Z"
 	},
 	{
 		id: 211,
@@ -2187,7 +2187,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "높음",
-		createdAt: 1759636800000
+		createdAt: "2025-10-05T04:00:00.000Z"
 	},
 	{
 		id: 212,
@@ -2198,7 +2198,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1754784000000
+		createdAt: "2025-08-10T00:00:00.000Z"
 	},
 	{
 		id: 213,
@@ -2209,7 +2209,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1754971200000
+		createdAt: "2025-08-12T04:00:00.000Z"
 	},
 	{
 		id: 214,
@@ -2220,7 +2220,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1755223200000
+		createdAt: "2025-08-15T02:00:00.000Z"
 	},
 	{
 		id: 215,
@@ -2231,7 +2231,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1755496800000
+		createdAt: "2025-08-18T06:00:00.000Z"
 	},
 	{
 		id: 216,
@@ -2242,7 +2242,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1755734400000
+		createdAt: "2025-08-21T00:00:00.000Z"
 	},
 	{
 		id: 217,
@@ -2253,7 +2253,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1756094400000
+		createdAt: "2025-08-25T04:00:00.000Z"
 	},
 	{
 		id: 218,
@@ -2264,7 +2264,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1756346400000
+		createdAt: "2025-08-28T02:00:00.000Z"
 	},
 	{
 		id: 219,
@@ -2275,7 +2275,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1756512000000
+		createdAt: "2025-08-30T00:00:00.000Z"
 	},
 	{
 		id: 220,
@@ -2286,7 +2286,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1756785600000
+		createdAt: "2025-09-02T04:00:00.000Z"
 	},
 	{
 		id: 221,
@@ -2297,7 +2297,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1757030400000
+		createdAt: "2025-09-05T00:00:00.000Z"
 	},
 	{
 		id: 222,
@@ -2308,7 +2308,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1757224800000
+		createdAt: "2025-09-07T06:00:00.000Z"
 	},
 	{
 		id: 223,
@@ -2319,7 +2319,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1757815200000
+		createdAt: "2025-09-14T02:00:00.000Z"
 	},
 	{
 		id: 224,
@@ -2330,7 +2330,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1758427200000
+		createdAt: "2025-09-21T04:00:00.000Z"
 	},
 	{
 		id: 225,
@@ -2341,7 +2341,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1759017600000
+		createdAt: "2025-09-28T00:00:00.000Z"
 	},
 	{
 		id: 226,
@@ -2352,7 +2352,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1762048800000
+		createdAt: "2025-11-02T02:00:00.000Z"
 	},
 	{
 		id: 227,
@@ -2363,7 +2363,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1762056000000
+		createdAt: "2025-11-02T04:00:00.000Z"
 	},
 	{
 		id: 228,
@@ -2374,7 +2374,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1762063200000
+		createdAt: "2025-11-02T06:00:00.000Z"
 	},
 	{
 		id: 229,
@@ -2385,7 +2385,7 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1762041600000
+		createdAt: "2025-11-02T00:00:00.000Z"
 	},
 	{
 		id: 230,
@@ -2396,7 +2396,7 @@ export const mockInquiryData = [
 		manager: "김민수",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1762135200000
+		createdAt: "2025-11-03T02:00:00.000Z"
 	},
 	{
 		id: 231,
@@ -2407,7 +2407,7 @@ export const mockInquiryData = [
 		manager: "이지은",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1762142400000
+		createdAt: "2025-11-03T04:00:00.000Z"
 	},
 	{
 		id: 232,
@@ -2418,7 +2418,7 @@ export const mockInquiryData = [
 		manager: "박서준",
 		status: "완료",
 		sensitivity: "보통",
-		createdAt: 1762149600000
+		createdAt: "2025-11-03T06:00:00.000Z"
 	},
 	{
 		id: 233,
@@ -2429,6 +2429,6 @@ export const mockInquiryData = [
 		manager: "정유진",
 		status: "완료",
 		sensitivity: "낮음",
-		createdAt: 1762156800000
+		createdAt: "2025-11-03T08:00:00.000Z"
 	}
 ]
