@@ -48,10 +48,40 @@ function App() {
         >
           Relay Tok
         </Link>
-        <div className="flex gap-3 items-center">
+        <div className="flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-2">
+            <input
+              type="text"
+              placeholder="Access Key"
+              className={`w-32 px-3 py-2 text-xs font-medium rounded-lg border transition-all duration-200 placeholder:text-xs placeholder:tracking-tight focus:outline-none focus:ring-2 focus:ring-indigo-400/70 focus:border-indigo-400/60 hover:-translate-y-0.5 ${
+                isDark
+                  ? "bg-[#1f253b] border-white/10 hover:border-indigo-300/40 text-white placeholder:text-slate-400"
+                  : "bg-white border-gray-200 hover:border-indigo-300/70 text-gray-800 placeholder:text-gray-400"
+              }`}
+            />
+            <input
+              type="password"
+              placeholder="Access Secret"
+              className={`w-36 px-3 py-2 text-xs font-medium rounded-lg border transition-all duration-200 placeholder:text-xs placeholder:tracking-tight focus:outline-none focus:ring-2 focus:ring-indigo-400/70 focus:border-indigo-400/60 hover:-translate-y-0.5 ${
+                isDark
+                  ? "bg-[#1f253b] border-white/10 hover:border-indigo-300/40 text-white placeholder:text-slate-400"
+                  : "bg-white border-gray-200 hover:border-indigo-300/70 text-gray-800 placeholder:text-gray-400"
+              }`}
+            />
+            <button
+              type="button"
+              className={`hover:cursor-pointer px-4 py-2 text-xs font-semibold rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-400/70 focus:ring-offset-2 focus:ring-offset-transparent hover:-translate-y-0.5 ${
+                isDark
+                  ? "bg-indigo-500/80 hover:bg-indigo-400 text-white shadow-lg/50"
+                  : "bg-indigo-500/90 hover:bg-indigo-500 text-white shadow-md"
+              }`}
+            >
+              Enter Key
+            </button>
+          </div>
           <button
             onClick={toggleDarkMode}
-            className={`px-3 py-1.5 rounded-lg transition-colors duration-200 text-sm font-semibold tracking-tight ${
+            className={`hover:cursor-pointer px-3 py-1.5 rounded-lg transition-colors duration-200 text-sm font-semibold tracking-tight ${
               isDark
                 ? "text-gray-300 hover:bg-gray-700 hover:text-white"
                 : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
@@ -94,7 +124,11 @@ function App() {
       </nav>
       <div
         className={`pt-[60px] min-h-screen ${
-          isCustomBackgroundPage ? "bg-transparent" : isDark ? "bg-gray-900" : "bg-gray-50"
+          isCustomBackgroundPage
+            ? "bg-transparent"
+            : isDark
+            ? "bg-gray-900"
+            : "bg-gray-50"
         }`}
       >
         <Routes>
@@ -119,7 +153,7 @@ function App() {
           style={{
             background: isDark
               ? "linear-gradient(to bottom, transparent 0%, rgba(31, 41, 55, 0.1) 15%, rgba(31, 41, 55, 0.25) 35%, rgba(31, 41, 55, 0.5) 60%, rgba(31, 41, 55, 0.75) 85%, rgb(31, 41, 55) 100%)"
-              : "linear-gradient(to bottom, transparent 0%, rgba(255, 255, 255, 0.1) 15%, rgba(255, 255, 255, 0.25) 35%, rgba(255, 255, 255, 0.5) 60%, rgba(255, 255, 255, 0.75) 85%, rgb(255, 255, 255) 100%)"
+              : "linear-gradient(to bottom, transparent 0%, rgba(255, 255, 255, 0.1) 15%, rgba(255, 255, 255, 0.25) 35%, rgba(255, 255, 255, 0.5) 60%, rgba(255, 255, 255, 0.75) 85%, rgb(255, 255, 255) 100%)",
           }}
         />
         <p

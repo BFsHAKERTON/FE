@@ -6,13 +6,12 @@ import MultiDimAnalysisCard from "./MultiDimAnalysisCard";
 import TagTrendsCard from "./TagTrendsCard";
 import KpiSummaryCard from "./KpiSummaryCard";
 import { getWeeklyKeywords } from "../../shared/api/services/stats";
+import { mockInquiryData } from "../../data/mockInquiryData";
 
-const HIERARCHICAL_TAGS = [
-  "전체",
+const BASE_TAGS = [
+  "고객유형/일반",
   "고객유형/VIP",
   "고객유형/반복컴플레인",
-  "고객유형/신규고객",
-  "고객유형/휴면고객",
   "상품문의/교환/사이즈",
   "상품문의/교환/색상",
   "상품문의/교환/불량",
@@ -32,12 +31,24 @@ const HIERARCHICAL_TAGS = [
   "기타/건의",
 ];
 
+const NORMALIZED_INQUIRIES = normalizeMockInquiryData(mockInquiryData);
+
+const EXTRA_TAGS = Array.from(
+  new Set(
+    NORMALIZED_INQUIRIES.flatMap((item) =>
+      (item.tags || []).filter(
+        (tag) => tag && tag !== "전체" && !BASE_TAGS.includes(tag)
+      )
+    )
+  )
+).sort((a, b) => a.localeCompare(b));
+
+const HIERARCHICAL_TAGS = ["전체", ...BASE_TAGS, ...EXTRA_TAGS];
+
 const AVAILABLE_DIMENSIONS = [
-  "유입페이지",
   "상담태그",
   "시간대",
   "요일",
-  "담당자",
   "고객등급",
   "상담상태",
 ];
@@ -448,58 +459,46 @@ const MULTI_DIMENSIONAL_DATA = {
   ],
 };
 
-function createInquiryData() {
-  const data = [];
-  const today = new Date();
+function normalizeMockInquiryData(data) {
+  if (!Array.isArray(data)) return [];
 
-  for (let i = 89; i >= 0; i -= 1) {
-    const date = new Date(today);
-    date.setDate(date.getDate() - i);
-    const dateStr = date.toISOString().split("T")[0];
-    const isWeekend = date.getDay() === 0 || date.getDay() === 6;
+  return data
+    .map((inquiry) => {
+      const date = normalizeDate(inquiry?.date || inquiry?.createdAt);
+      if (!date) return null;
+      return {
+        ...inquiry,
+        date,
+        tags: Array.isArray(inquiry?.tags) ? inquiry.tags : [],
+      };
+    })
+    .filter(Boolean);
+}
 
-    const dailyCount = isWeekend
-      ? Math.floor(Math.random() * 30) + 5
-      : Math.floor(Math.random() * 60) + 20;
-
-    for (let j = 0; j < dailyCount; j += 1) {
-      const tagCount = Math.floor(Math.random() * 2) + 1;
-      const selectedTags = new Set();
-
-      while (selectedTags.size < tagCount) {
-        const randomTag =
-          HIERARCHICAL_TAGS[
-            Math.floor(Math.random() * (HIERARCHICAL_TAGS.length - 1)) + 1
-          ];
-        selectedTags.add(randomTag);
-      }
-
-      data.push({
-        date: dateStr,
-        tags: Array.from(selectedTags),
-        id: `inquiry-${dateStr}-${j}`,
-      });
-    }
-  }
-
-  return data;
+function normalizeDate(input) {
+  if (!input) return null;
+  const date = new Date(input);
+  if (Number.isNaN(date.getTime())) return null;
+  return date.toISOString().split("T")[0];
 }
 
 function generateTagFilteredHeatmap(inquiryData, tagFilter) {
-  const dateData = {};
+  if (!Array.isArray(inquiryData)) return {};
 
-  inquiryData
-    .filter(
-      (inquiry) => tagFilter === "전체" || inquiry.tags.includes(tagFilter)
-    )
-    .forEach((inquiry) => {
-      if (!dateData[inquiry.date]) {
-        dateData[inquiry.date] = 0;
-      }
-      dateData[inquiry.date] += 1;
-    });
+  return inquiryData.reduce((acc, inquiry) => {
+    const tags = inquiry?.tags || [];
+    if (tagFilter !== "전체" && !tags.includes(tagFilter)) {
+      return acc;
+    }
 
-  return dateData;
+    const dateKey = normalizeDate(inquiry?.date || inquiry?.createdAt);
+    if (!dateKey) {
+      return acc;
+    }
+
+    acc[dateKey] = (acc[dateKey] || 0) + 1;
+    return acc;
+  }, {});
 }
 
 function getHeatmapColor(count, max) {
@@ -507,11 +506,11 @@ function getHeatmapColor(count, max) {
 
   const percentage = (count / max) * 100;
 
-  if (percentage <= 20) return "bg-emerald-200 dark:bg-emerald-900";
-  if (percentage <= 40) return "bg-emerald-400 dark:bg-emerald-700";
-  if (percentage <= 60) return "bg-emerald-600 dark:bg-emerald-500";
-  if (percentage <= 80) return "bg-emerald-700 dark:bg-emerald-400";
-  return "bg-emerald-800 dark:bg-emerald-300";
+  if (percentage >= 80) return "bg-emerald-900 dark:bg-emerald-300";
+  if (percentage >= 60) return "bg-emerald-800 dark:bg-emerald-400";
+  if (percentage >= 40) return "bg-emerald-700 dark:bg-emerald-500";
+  if (percentage >= 20) return "bg-emerald-500 dark:bg-emerald-600";
+  return "bg-emerald-200 dark:bg-emerald-700";
 }
 
 function buildWeeks(tagHeatmapData) {
@@ -556,9 +555,8 @@ function Dashboard({ isDark = true }) {
   const [error, setError] = useState("");
   const [keywords, setKeywords] = useState([]);
   const [tagFilter, setTagFilter] = useState("전체");
-  const [dimension1, setDimension1] = useState("유입페이지");
-  const [dimension2, setDimension2] = useState("상담태그");
-  const [inquiryData] = useState(() => createInquiryData());
+  const [dimension1, setDimension1] = useState("상담태그");
+  const [dimension2, setDimension2] = useState("시간대");
 
   useEffect(() => {
     let mounted = true;
@@ -581,9 +579,15 @@ function Dashboard({ isDark = true }) {
     };
   }, []);
 
+  useEffect(() => {
+    if (!HIERARCHICAL_TAGS.includes(tagFilter)) {
+      setTagFilter("전체");
+    }
+  }, [tagFilter]);
+
   const tagHeatmapData = useMemo(
-    () => generateTagFilteredHeatmap(inquiryData, tagFilter),
-    [inquiryData, tagFilter]
+    () => generateTagFilteredHeatmap(NORMALIZED_INQUIRIES, tagFilter),
+    [tagFilter]
   );
 
   const maxCount = useMemo(
@@ -607,6 +611,20 @@ function Dashboard({ isDark = true }) {
     if (!Array.isArray(keywords) || keywords.length === 0) return null;
     return keywords.reduce((acc, cur) => (cur.count > acc.count ? cur : acc), keywords[0]);
   }, [keywords]);
+
+  useEffect(() => {
+    if (!AVAILABLE_DIMENSIONS.includes(dimension1)) {
+      setDimension1(AVAILABLE_DIMENSIONS[0]);
+      return;
+    }
+
+    if (!AVAILABLE_DIMENSIONS.includes(dimension2) || dimension1 === dimension2) {
+      const fallback = AVAILABLE_DIMENSIONS.find((dim) => dim !== dimension1) || AVAILABLE_DIMENSIONS[0];
+      if (fallback && fallback !== dimension2) {
+        setDimension2(fallback);
+      }
+    }
+  }, [dimension1, dimension2]);
 
   const containerStyle = isDark
     ? {
