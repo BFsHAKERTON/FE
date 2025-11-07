@@ -42,7 +42,10 @@ export function startKakaoLogin(redirectUri) {
  * @param {{ email?: string, password?: string }} [credentials]
  * @returns {Promise<AuthTokens>}
  */
-export function mockLogin(credentials = {}) {
+export function mockLogin(credentials) {
+	if (!credentials || Object.keys(credentials).length === 0) {
+		return http.post(`${API_PREFIX}/auth/mock/login`);
+	}
 	return http.post(`${API_PREFIX}/auth/mock/login`, { body: credentials });
 }
 

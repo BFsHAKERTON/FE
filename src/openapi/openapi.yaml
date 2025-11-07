@@ -89,10 +89,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/User"
-              example:
-                userId: "123e4567-e89b-12d3-a456-426614174000"
-                email: "user@example.com"
-                name: "홍길동"
         '401':
           description: "인증 실패 (토큰 누락, 만료, 유효하지 않음)"
           content:
@@ -111,41 +107,6 @@ paths:
                 example:
                   error: "USER_NOT_FOUND"
                   message: "사용자를 찾을 수 없습니다."
-
-  /auth/mock/login:
-    post:
-      summary: "Mock 로그인"
-      description: "목 개발용. accessToken/refreshToken을 즉시 발급합니다."
-      tags: ["Authentication"]
-      requestBody:
-        required: false
-        content:
-          application/json:
-            schema:
-              type: object
-              additionalProperties: false
-              properties:
-                email:
-                  oneOf:
-                    - type: string
-                      format: email
-                    - type: string
-                      enum: ['']
-                password:
-                  type: string
-              example: {}
-      responses:
-        '200':
-          description: "로그인 성공"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/AuthTokens"
-              examples:
-                default:
-                  value:
-                    accessToken: "mock-access"
-                    refreshToken: "mock-refresh"
 
   # ---------------------------------------------
   # /integrations
@@ -261,10 +222,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/NotionStatusResponse"
-              example:
-                connected: true
-                workspaceName: "홍길동의 워크스페이스"
-                workspaceUrl: "https://www.notion.so/..."
         '401':
           description: "인증 실패"
           content:
@@ -301,10 +258,10 @@ paths:
   # ---------------------------------------------
   # /stats
   # ---------------------------------------------
-  /stats/keywords/weekly:
+  /stats/tags/top-weekly:
     get:
-      summary: "이번 주 핫 키워드 조회"
-      description: "이번 주 '핫 키워드'(태그) 목록을 빈도수 순서대로 조회합니다."
+      summary: "이번 주 인기 태그 조회"
+      description: "최근 7일 동안 생성된 문의를 바탕으로 태그 사용 빈도가 높은 순으로 반환합니다."
       tags: ["Statistics"]
       security:
         - bearerAuth: []
@@ -314,24 +271,17 @@ paths:
           schema:
             type: integer
             format: int32
-            default: 10
+            default: 5
+            minimum: 1
           required: false
-          description: "조회할 최대 키워드 수"
+          description: "조회할 태그 개수 (기본 5개)"
       responses:
         '200':
-          description: "핫 키워드 조회 성공"
+          description: "인기 태그 조회 성공"
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/KeywordStat"
-              example:
-                - { keyword: "환불", count: 120 }
-                - { keyword: "배송", count: 98 }
-                - { keyword: "AS", count: 74 }
-                - { keyword: "지연", count: 63 }
-                - { keyword: "교환", count: 52 }
+                $ref: "#/components/schemas/TagStatListResponse"
         '401':
           description: "인증 실패"
           content:
@@ -339,29 +289,35 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
-  /stats/inquiries/hourly-today:
+  /stats/tags/monthly:
     get:
-      summary: "금일 시간대별 문의 수 조회"
-      description: "금일 0시부터 현재 시간까지의 시간대별 문의 수를 조회합니다."
+      summary: "기간별 태그별 문의 수"
+      description: "주어진 기간 동안 문의에 사용된 태그별 카운트를 반환합니다."
       tags: ["Statistics"]
       security:
         - bearerAuth: []
+      parameters:
+        - in: query
+          name: start
+          schema:
+            type: string
+            format: date-time
+          required: false
+          description: "조회 시작 일시 (기본값: 지금으로부터 30일 전)"
+        - in: query
+          name: end
+          schema:
+            type: string
+            format: date-time
+          required: false
+          description: "조회 종료 일시 (기본값: 현재 시각)"
       responses:
         '200':
-          description: "시간대별 문의 수 조회 성공"
+          description: "태그별 문의 수 조회 성공"
           content:
             application/json:
               schema:
-                type: array
-                minItems: 5
-                items:
-                  $ref: "#/components/schemas/HourlyStat"
-              example:
-                - { hour: 9, count: 12 }
-                - { hour: 10, count: 15 }
-                - { hour: 11, count: 20 }
-                - { hour: 12, count: 18 }
-                - { hour: 13, count: 22 }
+                $ref: "#/components/schemas/TagStatListResponse"
         '401':
           description: "인증 실패"
           content:
@@ -369,22 +325,115 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
-  /stats/inquiries/total-weekly:
+  /stats/customers/regions:
     get:
-      summary: "이번 주 총 문의 수 조회"
-      description: "이번 주(예: 월요일~일요일)의 총 문의 수를 조회합니다."
+      summary: "기간별 고객 지역 분포"
+      description: "문의에 저장된 고객 도시 정보를 기반으로 한 달간의 지역 분포 데이터를 제공합니다."
       tags: ["Statistics"]
       security:
         - bearerAuth: []
+      parameters:
+        - in: query
+          name: start
+          schema:
+            type: string
+            format: date-time
+          required: false
+          description: "조회 시작 일시 (기본값: 지금으로부터 30일 전)"
+        - in: query
+          name: end
+          schema:
+            type: string
+            format: date-time
+          required: false
+          description: "조회 종료 일시 (기본값: 현재 시각)"
       responses:
         '200':
-          description: "총 문의 수 조회 성공"
+          description: "고객 지역 분포 조회 성공"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/TotalStatsResponse"
-              example:
-                totalCount: 120
+                $ref: "#/components/schemas/RegionDistributionResponse"
+        '401':
+          description: "인증 실패"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /stats/inquiries/raw:
+    get:
+      summary: "다차원 분석용 원자료"
+      description: "태그, 상담 시각, 요일, 고객 정보를 포함한 원자료를 반환합니다. 프런트에서 자유롭게 가공할 수 있습니다."
+      tags: ["Statistics"]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: start
+          schema:
+            type: string
+            format: date-time
+          required: false
+          description: "조회 시작 일시 (기본값: 지금으로부터 30일 전)"
+        - in: query
+          name: end
+          schema:
+            type: string
+            format: date-time
+          required: false
+          description: "조회 종료 일시 (기본값: 현재 시각)"
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+          required: false
+          description: "최대 반환 행 수 (미지정 시 전체 반환, 필요시 페이지네이션 적용)"
+      responses:
+        '200':
+          description: "원자료 조회 성공"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InquiryRawResponse"
+        '401':
+          description: "인증 실패"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /stats/inquiries/summary:
+    get:
+      summary: "문의 요약 지표"
+      description: "기간 내 문의 총 건수 등의 주요 지표를 반환합니다."
+      tags: ["Statistics"]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: start
+          schema:
+            type: string
+            format: date-time
+          required: false
+          description: "조회 시작 일시 (기본값: 지금으로부터 30일 전)"
+        - in: query
+          name: end
+          schema:
+            type: string
+            format: date-time
+          required: false
+          description: "조회 종료 일시 (기본값: 현재 시각)"
+      responses:
+        '200':
+          description: "요약 지표 조회 성공"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InquirySummaryResponse"
         '401':
           description: "인증 실패"
           content:
@@ -426,20 +475,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PaginatedInquiriesResponse"
-              example:
-                pagination:
-                  currentPage: 1
-                  totalCount: 2
-                  totalPages: 1
-                data:
-                  - inquiryId: "111e4567-e89b-12d3-a456-426614174000"
-                    userName: "고객A"
-                    tags: ["환불", "긴급"]
-                    createdAt: "2025-11-06T02:00:00Z"
-                  - inquiryId: "222e4567-e89b-12d3-a456-426614174000"
-                    userName: "고객B"
-                    tags: ["배송"]
-                    createdAt: "2025-11-06T03:00:00Z"
         '401':
           description: "인증 실패"
           content:
@@ -467,16 +502,49 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InquiryResponse'
-              example:
-                inquiryId: "333e4567-e89b-12d3-a456-426614174000"
-                title: "환불 요청"
-                tagIds: []
-                status: "NEW"
-                requesterId: "123e4567-e89b-12d3-a456-426614174000"
-                assigneeIds: []
-                createdAt: "2025-11-06T02:10:00Z"
         '400':
           description: Bad request
+
+  /inquiries/analyze:
+    post:
+      summary: "채팅 메시지 LLM 분석"
+      description: |
+        채팅 메시지를 LLM으로 분석하여 부서 분류, 요약, 주요 피드백을 추출합니다.
+        이 API는 문의 생성 전에 미리 분석 결과를 확인하거나, 별도로 분석이 필요한 경우 사용합니다.
+      tags: ["Inquiries & Tags"]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChatAnalysisRequest"
+      responses:
+        '200':
+          description: "LLM 분석 성공"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChatAnalysisResponse"
+        '400':
+          description: "잘못된 요청 (chatMessages가 비어있거나 형식 오류)"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '401':
+          description: "인증 실패"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '500':
+          description: "LLM 분석 실패 (OpenAI API 오류 등)"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /inquiries/{inquiryId}:
     get:
@@ -500,15 +568,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/InquiryDetail"
-              example:
-                inquiryId: "111e4567-e89b-12d3-a456-426614174000"
-                userName: "고객A"
-                tags: ["환불", "긴급"]
-                createdAt: "2025-11-06T02:00:00Z"
-                notionPageUrl: "https://www.notion.so/..."
-                chatHistory:
-                  - { sender: "user", message: "환불하고 싶어요", timestamp: "2025-11-06T02:01:00Z" }
-                  - { sender: "agent", message: "도와드리겠습니다", timestamp: "2025-11-06T02:02:00Z" }
         '401':
           description: "인증 실패"
           content:
@@ -541,7 +600,6 @@ paths:
                 type: array
                 items:
                   type: string
-                minItems: 5
                 example: ["긴급", "환불", "AS", "신규"]
         '401':
           description: "인증 실패"
@@ -572,7 +630,6 @@ paths:
                 type: array
                 items:
                   type: string
-                minItems: 5
                 example: ["긴급", "환불", "AS", "신규", "배송문의"]
         '400':
           description: "잘못된 요청 (예: 배열 형식이 아님)"
@@ -613,9 +670,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/NotionDatabaseResponse"
-              example:
-                databaseId: "789e4567-e89b-12d3-a456-426614174aaa"
-                databaseUrl: "https://www.notion.so/..."
         '400':
           description: "잘못된 요청 (예: parentPageId가 유효하지 않음)"
           content:
@@ -665,9 +719,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/NotionPageResponse"
-              example:
-                pageId: "abc-123"
-                pageUrl: "https://www.notion.so/..."
         '400':
           description: "잘못된 요청 (예: databaseId가 유효하지 않거나, 요청 본문 스키마 오류)"
           content:
@@ -687,6 +738,143 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /notion/pages/{pageId}:
+    get:
+      summary: "노션 페이지 조회"
+      description: "특정 노션 페이지의 정보를 조회합니다."
+      tags: ["Notion"]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: pageId
+          schema:
+            type: string
+          required: true
+          description: "조회할 노션 페이지 ID"
+      responses:
+        '200':
+          description: "페이지 조회 성공"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotionPageResponse"
+        '401':
+          description: "인증 실패"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '404':
+          description: "페이지를 찾을 수 없음"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    patch:
+      summary: "노션 페이지 수정"
+      description: "특정 노션 페이지의 속성을 수정합니다."
+      tags: ["Notion"]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: pageId
+          schema:
+            type: string
+          required: true
+          description: "수정할 노션 페이지 ID"
+      requestBody:
+        description: "수정할 페이지 속성"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NotionPageRequest"
+            example:
+              properties:
+                title:
+                  title:
+                    - text:
+                        content: "업데이트된 제목"
+      responses:
+        '200':
+          description: "페이지 수정 성공"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotionPageResponse"
+        '400':
+          description: "잘못된 요청"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '401':
+          description: "인증 실패"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '404':
+          description: "페이지를 찾을 수 없음"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /notion/pages:
+    post:
+      summary: "노션 페이지 생성"
+      description: "새로운 노션 페이지를 생성합니다."
+      tags: ["Notion"]
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: "생성할 페이지 정보"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NotionPageRequest"
+            example:
+              parent:
+                type: "page_id"
+                page_id: "id"
+              properties:
+                title:
+                  title:
+                    - text:
+                        content: "생성한 페이지"
+              children:
+                - object: "block"
+                  type: "paragraph"
+                  paragraph:
+                    rich_text:
+                      - type: "text"
+                        text:
+                          content: "제목"
+      responses:
+        '201':
+          description: "페이지 생성 성공"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotionPageResponse"
+        '400':
+          description: "잘못된 요청"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '401':
+          description: "인증 실패"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   # ---------------------------------------------
   # /webhooks
   # ---------------------------------------------
@@ -697,14 +885,12 @@ paths:
         채널톡에서 '채팅 종료'와 같은 이벤트가 발생했을 때 호출되는 엔드포인트입니다.
         이 API는 공개되어 있어야 하며, X-Channel-Signature 헤더를 통해 요청의 유효성을 검증해야 합니다.
       tags: ["Webhooks"]
-      security:
-        - channelTalkSignature: []
       parameters:
         - in: header
           name: X-Channel-Signature 
           schema:
             type: string
-          required: true
+          required: false
           description: "채널톡에서 요청 유효성 검증을 위해 보내는 시그니처"
       requestBody:
         description: "채널톡에서 전송하는 Webhook Payload"
@@ -818,10 +1004,15 @@ components:
       properties:
         apiKey:
           type: string
-          description: "사용자가 발급받은 채널톡 API Key"
-          example: "ch-api-key-..."
+          description: "사용자가 발급받은 채널톡 Access Key"
+          example: "ch-access-key-..."
+        apiSecret:
+          type: string
+          description: "사용자가 발급받은 채널톡 Access Secret"
+          example: "ch-access-secret-..."
       required:
         - apiKey
+        - apiSecret
 
     NotionStatusResponse:
       type: object
@@ -841,47 +1032,132 @@ components:
         - connected
 
     # Statistics
-    KeywordStat:
+    DateRange:
       type: object
-      description: "키워드 통계 항목"
+      description: "조회 기간"
       properties:
-        keyword:
+        start:
           type: string
-          example: "환불"
+          format: date-time
+          description: "시작 일시"
+        end:
+          type: string
+          format: date-time
+          description: "종료 일시"
+      required: [start, end]
+
+    TagStatItem:
+      type: object
+      description: "태그별 문의 수"
+      properties:
+        tagId:
+          type: string
+          format: uuid
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        tagName:
+          type: string
+          example: "배송"
         count:
           type: integer
           format: int32
-          example: 120
-      required:
-        - keyword
-        - count
+          example: 15
+      required: [tagId, tagName, count]
 
-    HourlyStat:
+    TagStatListResponse:
       type: object
-      description: "시간대별 통계 항목"
+      description: "태그 통계 응답"
       properties:
-        hour:
-          type: integer
-          format: int32
-          example: 9
+        range:
+          $ref: "#/components/schemas/DateRange"
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/TagStatItem"
+      required: [range, items]
+
+    RegionDistributionItem:
+      type: object
+      description: "도시별 문의 수"
+      properties:
+        city:
+          type: string
+          example: "서울특별시"
         count:
           type: integer
           format: int32
-          example: 55
-      required:
-        - hour
-        - count
+          example: 42
+        ratio:
+          type: number
+          format: double
+          example: 0.35
+      required: [city, count]
 
-    TotalStatsResponse:
+    RegionDistributionResponse:
       type: object
-      description: "총 문의 수 응답"
+      description: "고객 지역 분포"
       properties:
-        totalCount:
+        range:
+          $ref: "#/components/schemas/DateRange"
+        total:
           type: integer
           format: int32
+          description: "전체 문의 수"
           example: 120
-      required:
-        - totalCount
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/RegionDistributionItem"
+      required: [range, total, items]
+
+    InquiryRawItem:
+      type: object
+      description: "다차원 분석용 원자료 행"
+      properties:
+        inquiryId:
+          type: string
+          format: uuid
+        createdAt:
+          type: string
+          format: date-time
+        tagId:
+          type: string
+          format: uuid
+        tagName:
+          type: string
+        customerCity:
+          type: string
+          nullable: true
+        customerGrade:
+          type: string
+          nullable: true
+        channelTalkUserId:
+          type: string
+          nullable: true
+      required: [inquiryId, createdAt, tagId, tagName]
+
+    InquiryRawResponse:
+      type: object
+      description: "다차원 분석 원자료 응답"
+      properties:
+        range:
+          $ref: "#/components/schemas/DateRange"
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/InquiryRawItem"
+      required: [range, items]
+
+    InquirySummaryResponse:
+      type: object
+      description: "문의 요약 지표"
+      properties:
+        range:
+          $ref: "#/components/schemas/DateRange"
+        totalInquiries:
+          type: integer
+          format: int32
+          example: 257
+      required: [range, totalInquiries]
 
     # Inquiries & Tags
     InquiryStatus:
@@ -910,6 +1186,11 @@ components:
         departmentIds:
           type: array
           items: { type: string, format: uuid }
+        chatMessages:
+          type: array
+          description: "채팅 메시지 목록 (LLM 분석용). 채널톡 API 응답에서 필요한 필드만 추출하여 전달합니다."
+          items:
+            $ref: '#/components/schemas/ChatMessage'
     InquiryResponse:
       type: object
       properties:
@@ -984,7 +1265,6 @@ components:
           $ref: "#/components/schemas/PaginationInfo"
         data:
           type: array
-          minItems: 5
           items:
             $ref: "#/components/schemas/InquirySummary"
       required:
@@ -1040,6 +1320,45 @@ components:
         - message
         - timestamp
 
+    ChatAnalysisRequest:
+      type: object
+      description: "채팅 메시지 LLM 분석 요청"
+      properties:
+        chatMessages:
+          type: array
+          description: "분석할 채팅 메시지 목록"
+          items:
+            $ref: "#/components/schemas/ChatMessage"
+          minItems: 1
+      required:
+        - chatMessages
+
+    ChatAnalysisResponse:
+      type: object
+      description: "LLM 분석 결과"
+      properties:
+        department:
+          type: array
+          description: "관련 부서 목록"
+          items:
+            type: string
+          example: ["개발팀", "운영팀"]
+        generalSummary:
+          type: string
+          description: "중립적인 한 줄 요약"
+          example: "사용자 로그인 시 간헐적으로 오류가 발생하여 문의함"
+        summary:
+          type: string
+          description: "문의 요약 (200자 이내)"
+          example: "로그인 버튼 클릭 시 반응 없음 (크롬 브라우저)"
+        keyFeedback:
+          type: string
+          description: "주요 피드백"
+          example: "로그인 버튼 클릭 시 서버 에러 발생, 콘솔에 500 Internal Server Error 확인"
+      required:
+        - department
+        - summary
+
     TagsConfigRequest:
       type: object
       description: "태그 설정 요청 본문"
@@ -1048,7 +1367,6 @@ components:
           type: array
           items:
             type: string
-          minItems: 1
           example: ["긴급", "환불", "AS", "신규", "배송문의"]
       required:
         - tags
@@ -1101,7 +1419,6 @@ components:
           }
         content:
           type: array
-          minItems: 2
           description: "페이지 본문에 추가될 블록(채팅 내용)"
           items:
             type: object

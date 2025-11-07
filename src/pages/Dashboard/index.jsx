@@ -5,7 +5,8 @@ import RegionDistributionCard from "./RegionDistributionCard";
 import MultiDimAnalysisCard from "./MultiDimAnalysisCard";
 import TagTrendsCard from "./TagTrendsCard";
 import KpiSummaryCard from "./KpiSummaryCard";
-import { getWeeklyKeywords } from "../../shared/api/services/stats";
+
+// import { getWeeklyKeywords } from "../../shared/api/services/stats";
 import { mockInquiryData } from "../../data/mockInquiryData";
 
 const BASE_TAGS = [
@@ -564,9 +565,12 @@ function Dashboard({ isDark = true }) {
       setError("");
       setLoading(true);
       try {
-        const data = await getWeeklyKeywords({ limit: 10 });
+        const res = await getTopWeeklyTags({ limit: 10 });
+        const mapped = Array.isArray(res?.items)
+          ? res.items.map((it) => ({ keyword: it.tagName, count: it.count }))
+          : [];
         if (mounted) {
-          setKeywords(Array.isArray(data) ? data : []);
+          setKeywords(mapped);
         }
       } catch (err) {
         if (mounted) setError(err?.message || "데이터 로드 실패");
@@ -609,7 +613,10 @@ function Dashboard({ isDark = true }) {
 
   const topKeyword = useMemo(() => {
     if (!Array.isArray(keywords) || keywords.length === 0) return null;
-    return keywords.reduce((acc, cur) => (cur.count > acc.count ? cur : acc), keywords[0]);
+    return keywords.reduce(
+      (acc, cur) => (cur.count > acc.count ? cur : acc),
+      keywords[0]
+    );
   }, [keywords]);
 
   useEffect(() => {
@@ -618,8 +625,13 @@ function Dashboard({ isDark = true }) {
       return;
     }
 
-    if (!AVAILABLE_DIMENSIONS.includes(dimension2) || dimension1 === dimension2) {
-      const fallback = AVAILABLE_DIMENSIONS.find((dim) => dim !== dimension1) || AVAILABLE_DIMENSIONS[0];
+    if (
+      !AVAILABLE_DIMENSIONS.includes(dimension2) ||
+      dimension1 === dimension2
+    ) {
+      const fallback =
+        AVAILABLE_DIMENSIONS.find((dim) => dim !== dimension1) ||
+        AVAILABLE_DIMENSIONS[0];
       if (fallback && fallback !== dimension2) {
         setDimension2(fallback);
       }
@@ -671,7 +683,9 @@ function Dashboard({ isDark = true }) {
         >
           Relay Tok Dashboard
         </h1>
-        <p className={`mt-3 text-base md:text-lg font-semibold text-purple-800`}>
+        <p
+          className={`mt-3 text-base md:text-lg font-semibold text-purple-800`}
+        >
           당신을 위한 상담 데이터 통합 분석
         </p>
       </div>

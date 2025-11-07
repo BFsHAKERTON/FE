@@ -32,6 +32,7 @@
  * @property {string} [channelTalkUrl]
  * @property {string} [notionPageUrl]
  * @property {string[]} [departmentIds]
+ * @property {ChatMessage[]} [chatMessages]
  */
 /**
  * @typedef {object} InquiryResponse
@@ -87,6 +88,25 @@ export function createInquiry(payload) {
  */
 export function getInquiry(inquiryId) {
 	return http.get(`${API_PREFIX}/inquiries/${inquiryId}`);
+}
+
+/**
+ * @typedef {object} ChatAnalysisRequest
+ * @property {ChatMessage[]} chatMessages
+ */
+/**
+ * @typedef {object} ChatAnalysisResponse
+ * @property {string[]} department
+ * @property {string} [generalSummary]
+ * @property {string} summary
+ * @property {string} [keyFeedback]
+ */
+/**
+ * @param {ChatAnalysisRequest} payload
+ * @returns {Promise<ChatAnalysisResponse>}
+ */
+export function analyzeChat(payload) {
+    return http.post(`${API_PREFIX}/inquiries/analyze`, { body: payload });
 }
 
 
