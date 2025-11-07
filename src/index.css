@@ -8,3 +8,17 @@ html.dark body {
 html:not(.dark) body {
   background-color: #f9fafb; /* gray-50 */
 }
+
+/* Custom animations */
+@keyframes bounce-subtle {
+  0%, 100% {
+    transform: translate(-50%, -100%) translateY(0);
+  }
+  50% {
+    transform: translate(-50%, -100%) translateY(-5px);
+  }
+}
+
+.animate-bounce-subtle {
+  animation: bounce-subtle 0.6s ease-in-out infinite;
+}

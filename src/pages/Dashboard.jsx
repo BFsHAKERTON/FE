@@ -6,6 +6,8 @@ function Dashboard() {
 	const [error, setError] = useState('')
 	const [keywords, setKeywords] = useState([])
 	const [selectedTag, setSelectedTag] = useState('전체')
+	const [hoveredDay, setHoveredDay] = useState(null)
+	const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 })
 	
 	// 다차원 분석을 위한 차원(Dimension) 선택
 	const [dimension1, setDimension1] = useState('유입페이지')
@@ -32,6 +34,9 @@ function Dashboard() {
 
 	// 태그별 히트맵 데이터 (최근 90일)
 	const [heatmapData, setHeatmapData] = useState([])
+	
+	// 다차원 히트맵 데이터 저장소 (날짜별 조합 데이터)
+	const [dimensionalHeatmapData] = useState({})
 	
 	// 다차원 데이터 저장소 (모든 조합 가능한 데이터)
 	const [multiDimensionalData] = useState({
@@ -493,25 +498,57 @@ function Dashboard() {
 		setHeatmapData(data)
 	}
 
-	const getHeatmapColor = (count) => {
+	// 다차원 히트맵 데이터 생성 (선택된 차원 조합에 따라)
+	const generateDimensionalHeatmap = () => {
+		const currentData = getCurrentDimensionData()
+		if (currentData.length === 0) return {}
+		
+		const dateData = {}
+		const today = new Date()
+		
+		// 최근 90일의 날짜별 데이터 생성
+		for (let i = 89; i >= 0; i--) {
+			const date = new Date(today)
+			date.setDate(date.getDate() - i)
+			const dateStr = date.toISOString().split('T')[0]
+			const isWeekend = date.getDay() === 0 || date.getDay() === 6
+			
+			// 각 dimension1 값에 대해 랜덤 데이터 생성
+			currentData.forEach(item => {
+				// 해당 날짜에 이 조합이 발생한 횟수 (랜덤)
+				const baseMultiplier = isWeekend ? 0.3 : 1.0
+				const dailyCount = Math.floor((item.total / 90) * (Math.random() * 1.5 + 0.5) * baseMultiplier)
+				
+				if (!dateData[dateStr]) dateData[dateStr] = 0
+				dateData[dateStr] += dailyCount
+			})
+		}
+		
+		return dateData
+	}
+
+	// 선택된 차원 조합에 따라 히트맵 데이터 생성
+	const dimensionalHeatmap = generateDimensionalHeatmap()
+	
+	// 날짜별로 그룹화 (다차원 분석 기반)
+	const groupedByDate = dimensionalHeatmap
+
+	// 최댓값 기준 5등급제 색상 계산
+	const getHeatmapColor = (count, maxCount) => {
 		if (count === 0) return 'bg-gray-100 dark:bg-gray-800'
-		if (count < 20) return 'bg-emerald-200 dark:bg-emerald-900'
-		if (count < 40) return 'bg-emerald-400 dark:bg-emerald-700'
-		if (count < 60) return 'bg-emerald-600 dark:bg-emerald-500'
+		if (maxCount === 0) return 'bg-gray-100 dark:bg-gray-800'
+		
+		const percentage = (count / maxCount) * 100
+		
+		if (percentage <= 20) return 'bg-emerald-200 dark:bg-emerald-900'
+		if (percentage <= 40) return 'bg-emerald-400 dark:bg-emerald-700'
+		if (percentage <= 60) return 'bg-emerald-600 dark:bg-emerald-500'
+		if (percentage <= 80) return 'bg-emerald-700 dark:bg-emerald-400'
 		return 'bg-emerald-800 dark:bg-emerald-300'
 	}
 
-	// 날짜별로 선택된 태그의 데이터만 필터링
-	const filteredHeatmapData = heatmapData.filter(d => 
-		selectedTag === '전체' || d.tag === selectedTag
-	)
-
-	// 날짜별로 그룹화 (같은 날짜의 모든 태그 합산)
-	const groupedByDate = filteredHeatmapData.reduce((acc, item) => {
-		if (!acc[item.date]) acc[item.date] = 0
-		acc[item.date] += item.count
-		return acc
-	}, {})
+	// 최댓값 계산
+	const maxCount = Math.max(...Object.values(groupedByDate), 0)
 
 	// 주차별로 그룹화
 	const getWeekNumber = (dateStr) => {
@@ -552,51 +589,116 @@ function Dashboard() {
 
 			{/* Main Grid */}
 			<div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-				{/* Tag Heatmap Calendar */}
+				{/* Dimensional Heatmap Calendar */}
 				<div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
-					<div className="flex items-center justify-between mb-6">
-						<h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">
-							🏷️ 태그별 활동 히트맵 (최근 90일)
-						</h2>
-						<select 
-							value={selectedTag}
-							onChange={(e) => setSelectedTag(e.target.value)}
-							className="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-						>
-							<option>전체</option>
-							<option>반품 및 교환</option>
-							<option>구매</option>
-							<option>상담</option>
-							<option>배송</option>
-							<option>결제</option>
-						</select>
+					<div className="mb-6">
+						<div className="flex items-center justify-between mb-2">
+							<h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">
+								📊 다차원 활동 히트맵 (최근 90일)
+							</h2>
+						</div>
+						<p className="text-sm text-gray-600 dark:text-gray-400">
+							<span className="font-semibold text-blue-600 dark:text-blue-400">{dimension1}</span>
+							<span className="mx-2">×</span>
+							<span className="font-semibold text-purple-600 dark:text-purple-400">{dimension2}</span>
+							<span className="ml-2">조합의 일별 발생 빈도</span>
+						</p>
 					</div>
 
 					{/* Calendar Grid */}
-					<div className="overflow-x-auto">
-						<div className="flex gap-1 min-w-max">
+					<div className="overflow-x-auto relative">
+						<div className="flex gap-1 min-w-max relative">
 							{weeks.map((week, weekIdx) => (
 								<div key={weekIdx} className="flex flex-col gap-1">
 									{week.map((day, dayIdx) => (
 										<div
 											key={dayIdx}
-											className={`w-4 h-4 rounded-sm ${getHeatmapColor(day.count)} hover:ring-2 hover:ring-blue-500 transition-all cursor-pointer`}
-											title={`${day.date}: ${day.count}건`}
+											className={`w-4 h-4 rounded-sm ${getHeatmapColor(day.count, maxCount)} hover:ring-2 hover:ring-blue-500 transition-all cursor-pointer relative`}
+											onMouseEnter={(e) => {
+												const rect = e.currentTarget.getBoundingClientRect()
+												setHoveredDay({
+													date: day.date,
+													count: day.count,
+													percentage: maxCount > 0 ? ((day.count / maxCount) * 100).toFixed(1) : 0,
+													dayName: ['일', '월', '화', '수', '목', '금', '토'][day.day]
+												})
+												setTooltipPosition({
+													x: rect.left + rect.width / 2,
+													y: rect.top - 10
+												})
+											}}
+											onMouseLeave={() => setHoveredDay(null)}
 										/>
 									))}
 								</div>
 							))}
 						</div>
 						
-						{/* Legend */}
-						<div className="flex items-center gap-2 mt-4 text-sm text-gray-600 dark:text-gray-400">
-							<span>적음</span>
-							<div className="w-4 h-4 bg-gray-100 dark:bg-gray-800 rounded-sm"></div>
-							<div className="w-4 h-4 bg-emerald-200 dark:bg-emerald-900 rounded-sm"></div>
-							<div className="w-4 h-4 bg-emerald-400 dark:bg-emerald-700 rounded-sm"></div>
-							<div className="w-4 h-4 bg-emerald-600 dark:bg-emerald-500 rounded-sm"></div>
-							<div className="w-4 h-4 bg-emerald-800 dark:bg-emerald-300 rounded-sm"></div>
-							<span>많음</span>
+						{/* Floating Tooltip */}
+						{hoveredDay && (
+							<div 
+								className="fixed z-50 pointer-events-none animate-bounce-subtle"
+								style={{
+									left: `${tooltipPosition.x}px`,
+									top: `${tooltipPosition.y}px`,
+									transform: 'translate(-50%, -100%)'
+								}}
+							>
+								<div className="bg-white dark:bg-gray-800 rounded-lg shadow-2xl border-2 border-blue-500 dark:border-blue-400 p-4 min-w-[200px]">
+									<div className="text-center space-y-2">
+										<div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+											{hoveredDay.dayName}요일
+										</div>
+										<div className="text-sm font-medium text-gray-700 dark:text-gray-300">
+											{hoveredDay.date}
+										</div>
+										<div className="border-t border-gray-200 dark:border-gray-600 pt-2">
+											<div className="text-xs text-gray-600 dark:text-gray-400 mb-1">
+												{dimension1} × {dimension2}
+											</div>
+											<div className="text-3xl font-bold text-blue-600 dark:text-blue-400">
+												{hoveredDay.count.toLocaleString()}
+											</div>
+											<div className="text-xs text-gray-500 dark:text-gray-400">
+												건
+											</div>
+										</div>
+										<div className="flex items-center justify-center gap-2 text-xs">
+											<div className="bg-emerald-100 dark:bg-emerald-900 text-emerald-700 dark:text-emerald-300 px-2 py-1 rounded-full font-medium">
+												최댓값 대비 {hoveredDay.percentage}%
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						)}
+						
+						{/* Statistics */}
+						<div className="mt-4 flex items-center justify-between text-sm">
+							<div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+								<span>0%</span>
+								<div className="w-4 h-4 bg-gray-100 dark:bg-gray-800 rounded-sm border border-gray-300 dark:border-gray-600"></div>
+								<div className="w-4 h-4 bg-emerald-200 dark:bg-emerald-900 rounded-sm"></div>
+								<div className="w-4 h-4 bg-emerald-400 dark:bg-emerald-700 rounded-sm"></div>
+								<div className="w-4 h-4 bg-emerald-600 dark:bg-emerald-500 rounded-sm"></div>
+								<div className="w-4 h-4 bg-emerald-700 dark:bg-emerald-400 rounded-sm"></div>
+								<div className="w-4 h-4 bg-emerald-800 dark:bg-emerald-300 rounded-sm"></div>
+								<span>100%</span>
+							</div>
+							
+							{/* Total Count */}
+							<div className="text-gray-700 dark:text-gray-300 flex items-baseline gap-2">
+								<div>
+									<span className="font-semibold text-xs">총 </span>
+									<span className="text-lg font-bold text-blue-600 dark:text-blue-400">
+										{Object.values(groupedByDate).reduce((sum, count) => sum + count, 0).toLocaleString()}
+									</span>
+									<span className="font-semibold text-xs"> 건</span>
+								</div>
+								<div className="text-xs text-gray-500 dark:text-gray-400">
+									(최대 {maxCount.toLocaleString()}건/일)
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
