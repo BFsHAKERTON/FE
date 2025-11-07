@@ -13,13 +13,13 @@ function Dashboard() {
 	const [hoveredDay, setHoveredDay] = useState(null)
 	const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 })
 	
-	// 다차원 분석을 위한 차원(Dimension) 선택
-	const [dimension1, setDimension1] = useState('유입페이지')
-	const [dimension2, setDimension2] = useState('상담태그')
+	// 다차원 분석을 위한 차원(Dimension) 선택 (최대 3차원)
+	const [dimension1, setDimension1] = useState('상담태그')
+	const [dimension2, setDimension2] = useState('시간대')
+	const [dimension3, setDimension3] = useState('없음')
 	
-	// 사용 가능한 차원들
+	// 사용 가능한 차원들 (유입페이지 제거)
 	const availableDimensions = [
-		'유입페이지',
 		'상담태그',
 		'시간대',
 		'요일',
@@ -27,6 +27,9 @@ function Dashboard() {
 		'고객등급',
 		'상담상태'
 	]
+	
+	// 시각화 타입 (GA4 스타일)
+	const [visualizationType, setVisualizationType] = useState('막대그래프') // '히트맵', '막대그래프', '표'
 	
 	// 계층적 태그 시스템 (최대 3단계)
 	const [hierarchicalTags] = useState([
@@ -103,411 +106,94 @@ function Dashboard() {
 	// 태그별 히트맵 데이터 (최근 90일)
 	const [heatmapData, setHeatmapData] = useState([])
 	
-	// 다차원 데이터 저장소 (모든 조합 가능한 데이터)
-	const [multiDimensionalData] = useState({
-		// 유입페이지 × 상담태그
-		'유입페이지-상담태그': [
-			{ 
-				dimension1Value: '/products/shoes',
-				total: 342,
-				breakdown: {
-					'반품 및 교환': 142,
-					'상담': 98,
-					'사이즈': 67,
-					'색상': 35
-				}
-			},
-			{ 
-				dimension1Value: '/cart',
-				total: 289,
-				breakdown: {
-					'결제': 128,
-					'구매': 89,
-					'배송': 52,
-					'쿠폰': 20
-				}
-			},
-			{ 
-				dimension1Value: '/products/bags',
-				total: 198,
-				breakdown: {
-					'상담': 87,
-					'재입고': 54,
-					'반품 및 교환': 38,
-					'가격': 19
-				}
-			},
-			{ 
-				dimension1Value: '/my-page',
-				total: 156,
-				breakdown: {
-					'회원': 78,
-					'포인트': 43,
-					'등급': 25,
-					'정보수정': 10
-				}
-			},
-			{ 
-				dimension1Value: '/orders',
-				total: 123,
-				breakdown: {
-					'배송': 67,
-					'취소': 34,
-					'교환': 15,
-					'영수증': 7
-				}
-			}
-		],
+	// 다차원 데이터 저장소 - 모든 6C2 조합 자동 생성
+	const [multiDimensionalData] = useState(() => {
+		// 각 차원의 가능한 값들
+		const dimensionValues = {
+			'상담태그': ['반품 및 교환', '구매', '상담', '배송', '결제', '사이즈', '색상', '재입고', '쿠폰', '환불'],
+			'시간대': ['09-11시', '11-13시', '13-15시', '15-17시', '17-19시', '19-21시'],
+			'요일': ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'],
+			'담당자': ['김민수', '이지은', '박준호', '최서연', '정우진'],
+			'고객등급': ['VIP', 'GOLD', 'SILVER', '일반'],
+			'상담상태': ['진행중', '대기중', '완료', '보류']
+		}
 		
-		// 시간대 × 상담태그
-		'시간대-상담태그': [
-			{
-				dimension1Value: '09-11시',
-				total: 234,
-				breakdown: {
-					'구매': 89,
-					'상담': 67,
-					'배송': 45,
-					'반품 및 교환': 33
-				}
-			},
-			{
-				dimension1Value: '11-13시',
-				total: 198,
-				breakdown: {
-					'결제': 78,
-					'배송': 56,
-					'상담': 42,
-					'구매': 22
-				}
-			},
-			{
-				dimension1Value: '13-15시',
-				total: 267,
-				breakdown: {
-					'반품 및 교환': 112,
-					'상담': 78,
-					'배송': 54,
-					'사이즈': 23
-				}
-			},
-			{
-				dimension1Value: '15-17시',
-				total: 312,
-				breakdown: {
-					'상담': 134,
-					'구매': 87,
-					'결제': 61,
-					'배송': 30
-				}
-			},
-			{
-				dimension1Value: '17-19시',
-				total: 223,
-				breakdown: {
-					'배송': 98,
-					'상담': 67,
-					'취소': 38,
-					'환불': 20
-				}
-			}
-		],
+		const data = {}
 		
-		// 요일 × 상담태그
-		'요일-상담태그': [
-			{
-				dimension1Value: '월요일',
-				total: 189,
-				breakdown: {
-					'배송': 87,
-					'상담': 54,
-					'취소': 32,
-					'환불': 16
-				}
-			},
-			{
-				dimension1Value: '화요일',
-				total: 234,
-				breakdown: {
-					'구매': 98,
-					'상담': 76,
-					'결제': 43,
-					'배송': 17
-				}
-			},
-			{
-				dimension1Value: '수요일',
-				total: 267,
-				breakdown: {
-					'상담': 112,
-					'반품 및 교환': 89,
-					'사이즈': 44,
-					'색상': 22
-				}
-			},
-			{
-				dimension1Value: '목요일',
-				total: 298,
-				breakdown: {
-					'구매': 134,
-					'결제': 87,
-					'상담': 56,
-					'배송': 21
-				}
-			},
-			{
-				dimension1Value: '금요일',
-				total: 312,
-				breakdown: {
-					'결제': 156,
-					'구매': 89,
-					'배송': 47,
-					'상담': 20
-				}
-			},
-			{
-				dimension1Value: '토요일',
-				total: 156,
-				breakdown: {
-					'상담': 67,
-					'구매': 54,
-					'반품 및 교환': 25,
-					'배송': 10
-				}
-			},
-			{
-				dimension1Value: '일요일',
-				total: 123,
-				breakdown: {
-					'상담': 56,
-					'구매': 38,
-					'배송': 20,
-					'기타': 9
-				}
+		// 모든 차원 조합 생성 (6C2 = 15개)
+		const dimensions = Object.keys(dimensionValues)
+		for (let i = 0; i < dimensions.length; i++) {
+			for (let j = i + 1; j < dimensions.length; j++) {
+				const dim1 = dimensions[i]
+				const dim2 = dimensions[j]
+				const key = `${dim1}-${dim2}`
+				
+				// 각 조합에 대해 Mock 데이터 생성
+				data[key] = dimensionValues[dim1].slice(0, 5).map(value1 => {
+					const totalCount = Math.floor(Math.random() * 300) + 150
+					const breakdown = {}
+					
+					// dim2의 값들을 랜덤하게 분배
+					const dim2Values = dimensionValues[dim2].slice(0, 4)
+					let remaining = totalCount
+					
+					dim2Values.forEach((value2, idx) => {
+						if (idx === dim2Values.length - 1) {
+							breakdown[value2] = remaining
+						} else {
+							const count = Math.floor(Math.random() * (remaining / 2)) + 10
+							breakdown[value2] = count
+							remaining -= count
+						}
+					})
+					
+					return {
+						dimension1Value: value1,
+						total: totalCount,
+						breakdown: breakdown
+					}
+				})
 			}
-		],
+		}
 		
-		// 담당자 × 상담태그
-		'담당자-상담태그': [
-			{
-				dimension1Value: '김민수',
-				total: 287,
-				breakdown: {
-					'상담': 123,
-					'구매': 89,
-					'배송': 54,
-					'반품 및 교환': 21
-				}
-			},
-			{
-				dimension1Value: '이지은',
-				total: 312,
-				breakdown: {
-					'반품 및 교환': 145,
-					'상담': 98,
-					'사이즈': 47,
-					'색상': 22
-				}
-			},
-			{
-				dimension1Value: '박준호',
-				total: 234,
-				breakdown: {
-					'결제': 112,
-					'구매': 76,
-					'쿠폰': 32,
-					'환불': 14
-				}
-			},
-			{
-				dimension1Value: '최서연',
-				total: 267,
-				breakdown: {
-					'배송': 134,
-					'취소': 78,
-					'교환': 38,
-					'환불': 17
-				}
-			},
-			{
-				dimension1Value: '정우진',
-				total: 198,
-				breakdown: {
-					'상담': 98,
-					'회원': 56,
-					'포인트': 32,
-					'등급': 12
-				}
-			}
-		],
-		
-		// 고객등급 × 상담태그
-		'고객등급-상담태그': [
-			{
-				dimension1Value: 'VIP',
-				total: 234,
-				breakdown: {
-					'상담': 112,
-					'구매': 78,
-					'배송': 32,
-					'포인트': 12
-				}
-			},
-			{
-				dimension1Value: 'GOLD',
-				total: 312,
-				breakdown: {
-					'구매': 145,
-					'상담': 98,
-					'결제': 47,
-					'배송': 22
-				}
-			},
-			{
-				dimension1Value: 'SILVER',
-				total: 398,
-				breakdown: {
-					'상담': 178,
-					'반품 및 교환': 112,
-					'배송': 76,
-					'구매': 32
-				}
-			},
-			{
-				dimension1Value: '일반',
-				total: 456,
-				breakdown: {
-					'상담': 198,
-					'배송': 134,
-					'반품 및 교환': 89,
-					'결제': 35
-				}
-			}
-		],
-		
-		// 상담상태 × 상담태그
-		'상담상태-상담태그': [
-			{
-				dimension1Value: '진행중',
-				total: 156,
-				breakdown: {
-					'상담': 78,
-					'구매': 43,
-					'배송': 25,
-					'결제': 10
-				}
-			},
-			{
-				dimension1Value: '대기중',
-				total: 89,
-				breakdown: {
-					'긴급': 45,
-					'상담': 28,
-					'배송': 12,
-					'기타': 4
-				}
-			},
-			{
-				dimension1Value: '완료',
-				total: 892,
-				breakdown: {
-					'상담': 312,
-					'구매': 234,
-					'배송': 198,
-					'반품 및 교환': 148
-				}
-			},
-			{
-				dimension1Value: '보류',
-				total: 67,
-				breakdown: {
-					'복잡한 문의': 34,
-					'상담': 18,
-					'반품 및 교환': 10,
-					'기타': 5
-				}
-			}
-		],
-		
-		// 유입페이지 × 시간대
-		'유입페이지-시간대': [
-			{
-				dimension1Value: '/products/shoes',
-				total: 342,
-				breakdown: {
-					'09-11시': 45,
-					'11-13시': 67,
-					'13-15시': 98,
-					'15-17시': 89,
-					'17-19시': 43
-				}
-			},
-			{
-				dimension1Value: '/cart',
-				total: 289,
-				breakdown: {
-					'09-11시': 34,
-					'11-13시': 78,
-					'13-15시': 67,
-					'15-17시': 76,
-					'17-19시': 34
-				}
-			},
-			{
-				dimension1Value: '/products/bags',
-				total: 198,
-				breakdown: {
-					'09-11시': 23,
-					'11-13시': 45,
-					'13-15시': 56,
-					'15-17시': 52,
-					'17-19시': 22
-				}
-			}
-		],
-		
-		// 요일 × 시간대
-		'요일-시간대': [
-			{
-				dimension1Value: '월요일',
-				total: 189,
-				breakdown: {
-					'09-11시': 34,
-					'11-13시': 45,
-					'13-15시': 52,
-					'15-17시': 43,
-					'17-19시': 15
-				}
-			},
-			{
-				dimension1Value: '화요일',
-				total: 234,
-				breakdown: {
-					'09-11시': 45,
-					'11-13시': 56,
-					'13-15시': 62,
-					'15-17시': 54,
-					'17-19시': 17
-				}
-			},
-			{
-				dimension1Value: '수요일',
-				total: 267,
-				breakdown: {
-					'09-11시': 52,
-					'11-13시': 67,
-					'13-15시': 76,
-					'15-17시': 58,
-					'17-19시': 14
-				}
-			}
-		]
+		return data
 	})
 
-	// 현재 선택된 차원 조합의 데이터 가져오기
+	// 현재 선택된 차원 조합의 데이터 가져오기 (2차원 또는 3차원)
 	const getCurrentDimensionData = () => {
-		const key = `${dimension1}-${dimension2}`
-		return multiDimensionalData[key] || []
+		if (dimension3 === '없음') {
+			// 2차원 분석
+			const key = `${dimension1}-${dimension2}`
+			return multiDimensionalData[key] || []
+		} else {
+			// 3차원 분석 - 중첩 구조로 변환
+			const key2D = `${dimension1}-${dimension2}`
+			const baseData = multiDimensionalData[key2D] || []
+			
+			// 3차원 데이터 시뮬레이션 (실제로는 API에서 가져와야 함)
+			return baseData.map(item => ({
+				...item,
+				dimension3Breakdown: generateDimension3Data(item.dimension1Value, dimension3)
+			}))
+		}
+	}
+	
+	// 3차원 데이터 생성 함수 (더미)
+	const generateDimension3Data = (parentValue, dim3Type) => {
+		const dimension3Options = {
+			'상담태그': ['상담', '구매', '배송', '반품 및 교환', '결제'],
+			'시간대': ['09-11시', '11-13시', '13-15시', '15-17시', '17-19시'],
+			'요일': ['월요일', '화요일', '수요일', '목요일', '금요일'],
+			'담당자': ['김민수', '이지은', '박준호', '최서연', '정우진'],
+			'고객등급': ['VIP', 'GOLD', 'SILVER', '일반'],
+			'상담상태': ['진행중', '대기중', '완료', '보류']
+		}
+		
+		const options = dimension3Options[dim3Type] || []
+		return options.slice(0, 3).map(option => ({
+			value: option,
+			count: Math.floor(Math.random() * 80) + 20
+		}))
 	}
 
 	// 태그별 트렌드 데이터 (최근 7일)
@@ -783,17 +469,17 @@ function Dashboard() {
 				<div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
 					<div className="mb-6">
 						<h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">
-							다차원 분석 (nC2 조합)
+							다차원 분석 (최대 3차원, GA4 스타일)
 						</h2>
 						
-						{/* Dimension Selector */}
-						<div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+						{/* Dimension Selectors - 3D */}
+						<div className="space-y-3 mb-4">
 							<div className="flex items-center gap-2">
-								<label className="text-sm text-gray-600 dark:text-gray-400">차원 1:</label>
+								<label className="text-sm text-gray-600 dark:text-gray-400 w-16">차원 1:</label>
 								<select 
 									value={dimension1}
 									onChange={(e) => setDimension1(e.target.value)}
-									className="px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+									className="flex-1 px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
 								>
 									{availableDimensions.map(dim => (
 										<option key={dim} value={dim}>{dim}</option>
@@ -801,14 +487,12 @@ function Dashboard() {
 								</select>
 							</div>
 							
-							<span className="text-gray-400">×</span>
-							
 							<div className="flex items-center gap-2">
-								<label className="text-sm text-gray-600 dark:text-gray-400">차원 2:</label>
+								<label className="text-sm text-gray-600 dark:text-gray-400 w-16">차원 2:</label>
 								<select 
 									value={dimension2}
 									onChange={(e) => setDimension2(e.target.value)}
-									className="px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+									className="flex-1 px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
 								>
 									{availableDimensions.filter(d => d !== dimension1).map(dim => (
 										<option key={dim} value={dim}>{dim}</option>
@@ -816,67 +500,168 @@ function Dashboard() {
 								</select>
 							</div>
 							
-							<div className="text-xs text-gray-500 dark:text-gray-400 bg-blue-50 dark:bg-blue-900/20 px-3 py-1 rounded-full">
-								{getCurrentDimensionData().length > 0 
-									? `${getCurrentDimensionData().reduce((sum, item) => sum + item.total, 0)} 건` 
-									: '데이터 없음'}
+							<div className="flex items-center gap-2">
+								<label className="text-sm text-gray-600 dark:text-gray-400 w-16">차원 3:</label>
+								<select 
+									value={dimension3}
+									onChange={(e) => setDimension3(e.target.value)}
+									className="flex-1 px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
+								>
+									<option value="없음">없음 (2차원)</option>
+									{availableDimensions.filter(d => d !== dimension1 && d !== dimension2).map(dim => (
+										<option key={dim} value={dim}>{dim}</option>
+									))}
+								</select>
 							</div>
+						</div>
+						
+						{/* Visualization Type Selector (GA4 스타일) */}
+						<div className="flex items-center gap-3 mb-4">
+							<label className="text-sm text-gray-600 dark:text-gray-400">시각화:</label>
+							<div className="flex gap-2">
+								<button
+									onClick={() => setVisualizationType('막대그래프')}
+									className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+										visualizationType === '막대그래프'
+											? 'bg-blue-600 text-white shadow-md'
+											: 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+									}`}
+								>
+									📊 막대그래프
+								</button>
+								<button
+									onClick={() => setVisualizationType('히트맵')}
+									className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+										visualizationType === '히트맵'
+											? 'bg-blue-600 text-white shadow-md'
+											: 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+									}`}
+								>
+									🔥 히트맵
+								</button>
+								<button
+									onClick={() => setVisualizationType('표')}
+									className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+										visualizationType === '표'
+											? 'bg-blue-600 text-white shadow-md'
+											: 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+									}`}
+								>
+									📋 표
+								</button>
+							</div>
+						</div>
+						
+						{/* Info */}
+						<div className="text-xs text-gray-500 dark:text-gray-400 bg-blue-50 dark:bg-blue-900/20 px-3 py-2 rounded-lg">
+							{dimension3 === '없음' 
+								? `2차원 분석: ${dimension1} × ${dimension2}`
+								: `3차원 분석: ${dimension1} × ${dimension2} × ${dimension3} (중첩 구조)`
+							}
+							{getCurrentDimensionData().length > 0 && (
+								<span className="ml-2 font-semibold">
+									· 총 {getCurrentDimensionData().reduce((sum, item) => sum + item.total, 0)} 건
+								</span>
+							)}
 						</div>
 					</div>
 					
-					{/* Data Display */}
+					{/* Data Display - 시각화 타입별 렌더링 (GA4 스타일) */}
 					{getCurrentDimensionData().length > 0 ? (
-						<div className="space-y-6">
-							{getCurrentDimensionData().map((item, idx) => (
+						<div className="space-y-4">
+							{visualizationType === '막대그래프' && getCurrentDimensionData().map((item, idx) => (
 								<div key={idx} className="space-y-3">
-									{/* Header */}
 									<div className="flex items-center justify-between pb-2 border-b border-gray-200 dark:border-gray-700">
-										<span className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate" title={item.dimension1Value}>
-											{item.dimension1Value}
-										</span>
-										<span className="text-lg font-bold text-blue-600 dark:text-blue-400 ml-2">
-											{item.total}
-										</span>
+										<span className="text-sm font-semibold text-gray-900 dark:text-gray-100">{item.dimension1Value}</span>
+										<span className="text-lg font-bold text-blue-600 dark:text-blue-400">{item.total}</span>
 									</div>
-									
-									{/* Breakdown */}
 									<div className="space-y-2 pl-2">
-										{Object.entries(item.breakdown)
-											.sort((a, b) => b[1] - a[1])
-											.map(([key, count], tagIdx) => {
-												const percentage = (count / item.total) * 100
-												return (
-													<div key={tagIdx} className="flex items-center gap-2">
-														<span className="text-xs text-gray-600 dark:text-gray-400 w-24 truncate" title={key}>
-															{key}
-														</span>
+										{Object.entries(item.breakdown).sort((a, b) => b[1] - a[1]).map(([key, count], tagIdx) => {
+											const percentage = (count / item.total) * 100
+											return (
+												<div key={tagIdx}>
+													<div className="flex items-center gap-2">
+														<span className="text-xs text-gray-600 dark:text-gray-400 w-24 truncate">{key}</span>
 														<div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
-															<div 
-																className="bg-gradient-to-r from-emerald-400 to-emerald-600 h-1.5 rounded-full transition-all"
-																style={{ width: `${percentage}%` }}
-															/>
+															<div className="bg-linear-to-r from-emerald-400 to-emerald-600 h-1.5 rounded-full" style={{ width: `${percentage}%` }} />
 														</div>
-														<span className="text-xs font-medium text-gray-700 dark:text-gray-300 w-8 text-right">
-															{count}
-														</span>
-														<span className="text-xs text-gray-500 dark:text-gray-400 w-12 text-right">
-															{percentage.toFixed(1)}%
-														</span>
+														<span className="text-xs font-medium text-gray-700 dark:text-gray-300 w-8 text-right">{count}</span>
+														<span className="text-xs text-gray-500 dark:text-gray-400 w-12 text-right">{percentage.toFixed(1)}%</span>
 													</div>
-												)
-											})}
+													{dimension3 !== '없음' && item.dimension3Breakdown && (
+														<div className="ml-8 mt-1 space-y-1">
+															{item.dimension3Breakdown.map((d3, d3Idx) => (
+																<div key={d3Idx} className="flex items-center gap-2 text-xs">
+																	<span className="text-gray-500 w-20 truncate">↳ {d3.value}</span>
+																	<div className="flex-1 bg-gray-100 dark:bg-gray-800 rounded-full h-1">
+																		<div className="bg-blue-400 h-1 rounded-full" style={{ width: `${(d3.count / count) * 100}%` }} />
+																	</div>
+																	<span className="text-gray-600 dark:text-gray-400 w-8 text-right">{d3.count}</span>
+																</div>
+															))}
+														</div>
+													)}
+												</div>
+											)
+										})}
 									</div>
 								</div>
 							))}
+							
+							{visualizationType === '히트맵' && getCurrentDimensionData().map((item, idx) => {
+								const maxValue = Math.max(...Object.values(item.breakdown))
+								return (
+									<div key={idx} className="space-y-2">
+										<div className="text-sm font-semibold text-gray-900 dark:text-gray-100">{item.dimension1Value}</div>
+										<div className="grid grid-cols-4 gap-2">
+											{Object.entries(item.breakdown).sort((a, b) => b[1] - a[1]).map(([key, count], tagIdx) => {
+												const intensity = (count / maxValue) * 100
+												const bgColor = intensity <= 20 ? 'bg-emerald-100' : intensity <= 40 ? 'bg-emerald-300' : intensity <= 60 ? 'bg-emerald-500' : intensity <= 80 ? 'bg-emerald-700' : 'bg-emerald-900'
+												return (
+													<div key={tagIdx} className={`${bgColor} p-3 rounded-lg hover:scale-105 cursor-pointer`} title={`${key}: ${count}건`}>
+														<div className="text-xs font-medium truncate">{key}</div>
+														<div className="text-lg font-bold mt-1">{count}</div>
+													</div>
+												)
+											})}
+										</div>
+									</div>
+								)
+							})}
+							
+							{visualizationType === '표' && (
+								<div className="overflow-x-auto">
+									<table className="w-full text-sm">
+										<thead className="bg-gray-100 dark:bg-gray-700">
+											<tr>
+												<th className="px-4 py-2 text-left font-semibold">{dimension1}</th>
+												<th className="px-4 py-2 text-left font-semibold">{dimension2}</th>
+												{dimension3 !== '없음' && <th className="px-4 py-2 text-left font-semibold">{dimension3}</th>}
+												<th className="px-4 py-2 text-right font-semibold">건수</th>
+												<th className="px-4 py-2 text-right font-semibold">비율</th>
+											</tr>
+										</thead>
+										<tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+											{getCurrentDimensionData().map((item, idx) => (
+												Object.entries(item.breakdown).map(([key, count], tagIdx) => (
+													<tr key={`${idx}-${tagIdx}`} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+														<td className="px-4 py-2 text-gray-900 dark:text-gray-100">{item.dimension1Value}</td>
+														<td className="px-4 py-2 text-gray-700 dark:text-gray-300">{key}</td>
+														{dimension3 !== '없음' && <td className="px-4 py-2 text-gray-600 dark:text-gray-400 text-xs">{item.dimension3Breakdown?.[0]?.value || '-'}</td>}
+														<td className="px-4 py-2 text-right font-medium">{count}</td>
+														<td className="px-4 py-2 text-right text-gray-600 dark:text-gray-400">{((count / item.total) * 100).toFixed(1)}%</td>
+													</tr>
+												))
+											))}
+										</tbody>
+									</table>
+								</div>
+							)}
 						</div>
 					) : (
 						<div className="text-center py-12">
-							<p className="text-gray-500 dark:text-gray-400 text-sm">
-								해당 조합의 데이터가 없습니다.
-							</p>
-							<p className="text-gray-400 dark:text-gray-500 text-xs mt-2">
-								다른 차원 조합을 선택해주세요.
-							</p>
+							<p className="text-gray-500 dark:text-gray-400 text-sm">해당 조합의 데이터가 없습니다.</p>
+							<p className="text-gray-400 dark:text-gray-500 text-xs mt-2">다른 차원 조합을 선택해주세요.</p>
 						</div>
 					)}
 				</div>
@@ -897,7 +682,7 @@ function Dashboard() {
 								{data.map((value, idx) => (
 									<div key={idx} className="flex-1 flex flex-col items-center gap-1">
 										<div 
-											className="w-full bg-gradient-to-t from-blue-500 to-blue-300 rounded-t hover:from-blue-600 hover:to-blue-400 transition-colors"
+											className="w-full bg-linear-to-t from-blue-500 to-blue-300 rounded-t hover:from-blue-600 hover:to-blue-400 transition-colors"
 											style={{ height: `${(value / Math.max(...data)) * 100}%` }}
 											title={`${value}건`}
 										/>
@@ -938,7 +723,7 @@ function Dashboard() {
 						{keywords.map((k, idx) => (
 							<div 
 								key={idx}
-								className="px-4 py-2 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-gray-700 dark:to-gray-600 rounded-full border border-blue-200 dark:border-gray-500 hover:shadow-md transition-shadow"
+								className="px-4 py-2 bg-linear-to-r from-blue-50 to-purple-50 dark:from-gray-700 dark:to-gray-600 rounded-full border border-blue-200 dark:border-gray-500 hover:shadow-md transition-shadow"
 							>
 								<span className="text-gray-900 dark:text-gray-100 font-medium">
 									{k.keyword}
