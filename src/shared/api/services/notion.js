@@ -65,3 +65,29 @@ export function createDatabasePage(databaseId, payload) {
 }
 
 
+/**
+ * @param {string} pageId
+ * @returns {Promise<NotionPageResponse>}
+ */
+export function getPage(pageId) {
+    return http.get(`${API_PREFIX}/notion/pages/${pageId}`);
+}
+
+/**
+ * @param {string} pageId
+ * @param {NotionPageRequest} payload
+ * @returns {Promise<NotionPageResponse>}
+ */
+export function updatePage(pageId, payload) {
+    return http.patch(`${API_PREFIX}/notion/pages/${pageId}`, { body: payload });
+}
+
+/**
+ * @param {NotionPageRequest} payload
+ * @returns {Promise<NotionPageResponse>}
+ */
+export function createPage(payload) {
+    return http.post(`${API_PREFIX}/notion/pages`, { body: payload });
+}
+
+

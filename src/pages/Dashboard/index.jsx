@@ -5,7 +5,7 @@ import RegionDistributionCard from "./RegionDistributionCard";
 import MultiDimAnalysisCard from "./MultiDimAnalysisCard";
 import TagTrendsCard from "./TagTrendsCard";
 import KpiSummaryCard from "./KpiSummaryCard";
-import { getWeeklyKeywords } from "../../shared/api/services/stats";
+import { getTopWeeklyTags } from "../../shared/api/services/stats";
 
 const HIERARCHICAL_TAGS = [
   "전체",
@@ -566,9 +566,12 @@ function Dashboard({ isDark = true }) {
       setError("");
       setLoading(true);
       try {
-        const data = await getWeeklyKeywords({ limit: 10 });
+        const res = await getTopWeeklyTags({ limit: 10 });
+        const mapped = Array.isArray(res?.items)
+          ? res.items.map((it) => ({ keyword: it.tagName, count: it.count }))
+          : [];
         if (mounted) {
-          setKeywords(Array.isArray(data) ? data : []);
+          setKeywords(mapped);
         }
       } catch (err) {
         if (mounted) setError(err?.message || "데이터 로드 실패");

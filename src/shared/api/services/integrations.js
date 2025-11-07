@@ -2,6 +2,7 @@
 /**
  * @typedef {object} ChannelTalkRequest
  * @property {string} apiKey
+ * @property {string} apiSecret
  */
 /**
  * @typedef {object} ChannelTalkResponse
