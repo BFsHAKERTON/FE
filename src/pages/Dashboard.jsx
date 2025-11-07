@@ -57,43 +57,58 @@ function Dashboard() {
 		'기타/건의'
 	])
 	
-	// 상담 데이터 (계층적 태그 포함)
+	// Mock 상담 데이터 (실제 상담 1건 = 1행)
 	const [inquiryData] = useState(() => {
-		const data = []
-		const today = new Date()
-		
-		// 최근 90일간의 더미 데이터 생성
-		for (let i = 89; i >= 0; i--) {
-			const date = new Date(today)
-			date.setDate(date.getDate() - i)
-			const dateStr = date.toISOString().split('T')[0]
-			const isWeekend = date.getDay() === 0 || date.getDay() === 6
+		const data = [
+			// 2025-01-15 (수요일) - 10건
+			{ id: 1, date: '2025-01-15', tags: ['배송문의/배송조회'], timeSlot: '09-11시', weekday: '수요일', manager: '김민수', customerGrade: 'SILVER', status: '완료' },
+			{ id: 2, date: '2025-01-15', tags: ['상품문의/교환/사이즈'], timeSlot: '11-13시', weekday: '수요일', manager: '이지은', customerGrade: 'GOLD', status: '완료' },
+			{ id: 3, date: '2025-01-15', tags: ['결제문의/환불'], timeSlot: '15-17시', weekday: '수요일', manager: '박서준', customerGrade: 'VIP', status: '처리중' },
+			{ id: 4, date: '2025-01-15', tags: ['고객유형/VIP'], timeSlot: '17-19시', weekday: '수요일', manager: '정유진', customerGrade: 'VIP', status: '완료' },
+			{ id: 5, date: '2025-01-15', tags: ['상품문의/재고/입고문의'], timeSlot: '13-15시', weekday: '수요일', manager: '김민수', customerGrade: '일반', status: '완료' },
+			{ id: 6, date: '2025-01-15', tags: ['이벤트/포인트'], timeSlot: '15-17시', weekday: '수요일', manager: '이지은', customerGrade: 'GOLD', status: '완료' },
+			{ id: 7, date: '2025-01-15', tags: ['배송문의/배송조회'], timeSlot: '09-11시', weekday: '수요일', manager: '박서준', customerGrade: 'SILVER', status: '완료' },
+			{ id: 8, date: '2025-01-15', tags: ['상품문의/반품/기타'], timeSlot: '11-13시', weekday: '수요일', manager: '정유진', customerGrade: 'SILVER', status: '완료' },
+			{ id: 9, date: '2025-01-15', tags: ['결제문의/결제실패'], timeSlot: '13-15시', weekday: '수요일', manager: '김민수', customerGrade: '일반', status: '완료' },
+			{ id: 10, date: '2025-01-15', tags: ['기타/건의사항'], timeSlot: '17-19시', weekday: '수요일', manager: '이지은', customerGrade: '일반', status: '대기' },
 			
-			// 각 날짜마다 랜덤한 상담 건수 생성
-			const dailyCount = isWeekend ? Math.floor(Math.random() * 30) + 5 : Math.floor(Math.random() * 60) + 20
+			// 2025-01-16 (목요일) - 12건
+			{ id: 11, date: '2025-01-16', tags: ['배송문의/배송조회'], timeSlot: '09-11시', weekday: '목요일', manager: '김민수', customerGrade: 'SILVER', status: '완료' },
+			{ id: 12, date: '2025-01-16', tags: ['배송문의/배송조회'], timeSlot: '09-11시', weekday: '목요일', manager: '이지은', customerGrade: '일반', status: '완료' },
+			{ id: 13, date: '2025-01-16', tags: ['상품문의/교환/색상'], timeSlot: '11-13시', weekday: '목요일', manager: '박서준', customerGrade: 'GOLD', status: '완료' },
+			{ id: 14, date: '2025-01-16', tags: ['결제문의/환불'], timeSlot: '13-15시', weekday: '목요일', manager: '정유진', customerGrade: 'VIP', status: '완료' },
+			{ id: 15, date: '2025-01-16', tags: ['고객유형/VIP'], timeSlot: '15-17시', weekday: '목요일', manager: '김민수', customerGrade: 'VIP', status: '완료' },
+			{ id: 16, date: '2025-01-16', tags: ['상품문의/재고/품절'], timeSlot: '11-13시', weekday: '목요일', manager: '이지은', customerGrade: '일반', status: '완료' },
+			{ id: 17, date: '2025-01-16', tags: ['이벤트/쿠폰'], timeSlot: '15-17시', weekday: '목요일', manager: '박서준', customerGrade: 'GOLD', status: '완료' },
+			{ id: 18, date: '2025-01-16', tags: ['배송문의/배송조회'], timeSlot: '17-19시', weekday: '목요일', manager: '정유진', customerGrade: 'SILVER', status: '완료' },
+			{ id: 19, date: '2025-01-16', tags: ['상품문의/반품/불량'], timeSlot: '13-15시', weekday: '목요일', manager: '김민수', customerGrade: 'SILVER', status: '처리중' },
+			{ id: 20, date: '2025-01-16', tags: ['고객유형/반복컴플레인'], timeSlot: '15-17시', weekday: '목요일', manager: '이지은', customerGrade: 'SILVER', status: '완료' },
+			{ id: 21, date: '2025-01-16', tags: ['결제문의/카드승인'], timeSlot: '11-13시', weekday: '목요일', manager: '박서준', customerGrade: '일반', status: '완료' },
+			{ id: 22, date: '2025-01-16', tags: ['기타/문의'], timeSlot: '17-19시', weekday: '목요일', manager: '정유진', customerGrade: '일반', status: '대기' },
 			
-			for (let j = 0; j < dailyCount; j++) {
-				// 랜덤하게 태그 1-3개 선택
-				const tagCount = Math.floor(Math.random() * 2) + 1 // 1-2개 태그
-				const selectedTags = []
-				
-				for (let k = 0; k < tagCount; k++) {
-					const randomTag = hierarchicalTags[Math.floor(Math.random() * (hierarchicalTags.length - 1)) + 1]
-					if (!selectedTags.includes(randomTag)) {
-						selectedTags.push(randomTag)
-					}
-				}
-				
-				data.push({
-					date: dateStr,
-					tags: selectedTags,
-					id: `inquiry-${dateStr}-${j}`
-				})
-			}
-		}
+			// 2025-01-17 (금요일) - 15건 (주말 전 구매 폭주)
+			{ id: 23, date: '2025-01-17', tags: ['배송문의/배송조회'], timeSlot: '09-11시', weekday: '금요일', manager: '김민수', customerGrade: 'SILVER', status: '완료' },
+			{ id: 24, date: '2025-01-17', tags: ['상품문의/재고/입고문의'], timeSlot: '09-11시', weekday: '금요일', manager: '이지은', customerGrade: 'GOLD', status: '완료' },
+			{ id: 25, date: '2025-01-17', tags: ['상품문의/교환/사이즈'], timeSlot: '11-13시', weekday: '금요일', manager: '박서준', customerGrade: 'GOLD', status: '완료' },
+			{ id: 26, date: '2025-01-17', tags: ['결제문의/환불'], timeSlot: '13-15시', weekday: '금요일', manager: '정유진', customerGrade: 'VIP', status: '완료' },
+			{ id: 27, date: '2025-01-17', tags: ['고객유형/VIP'], timeSlot: '15-17시', weekday: '금요일', manager: '김민수', customerGrade: 'VIP', status: '완료' },
+			{ id: 28, date: '2025-01-17', tags: ['이벤트/포인트'], timeSlot: '17-19시', weekday: '금요일', manager: '이지은', customerGrade: 'GOLD', status: '완료' },
+			{ id: 29, date: '2025-01-17', tags: ['배송문의/배송조회'], timeSlot: '11-13시', weekday: '금요일', manager: '박서준', customerGrade: 'SILVER', status: '완료' },
+			{ id: 30, date: '2025-01-17', tags: ['상품문의/교환/색상'], timeSlot: '13-15시', weekday: '금요일', manager: '정유진', customerGrade: 'GOLD', status: '완료' },
+			{ id: 31, date: '2025-01-17', tags: ['결제문의/카드승인'], timeSlot: '15-17시', weekday: '금요일', manager: '김민수', customerGrade: '일반', status: '완료' },
+			{ id: 32, date: '2025-01-17', tags: ['상품문의/재고/품절'], timeSlot: '09-11시', weekday: '금요일', manager: '이지은', customerGrade: '일반', status: '완료' },
+			{ id: 33, date: '2025-01-17', tags: ['이벤트/쿠폰'], timeSlot: '11-13시', weekday: '금요일', manager: '박서준', customerGrade: 'GOLD', status: '완료' },
+			{ id: 34, date: '2025-01-17', tags: ['배송문의/배송조회'], timeSlot: '13-15시', weekday: '금요일', manager: '정유진', customerGrade: 'SILVER', status: '완료' },
+			{ id: 35, date: '2025-01-17', tags: ['상품문의/반품/기타'], timeSlot: '15-17시', weekday: '금요일', manager: '김민수', customerGrade: 'SILVER', status: '처리중' },
+			{ id: 36, date: '2025-01-17', tags: ['결제문의/결제실패'], timeSlot: '17-19시', weekday: '금요일', manager: '이지은', customerGrade: '일반', status: '완료' },
+			{ id: 37, date: '2025-01-17', tags: ['기타/건의사항'], timeSlot: '17-19시', weekday: '금요일', manager: '박서준', customerGrade: '일반', status: '대기' },
+		]
 		
 		return data
 	})
+	
+	// 현재 선택된 차원 조합의 데이터 가져오기 (2차원 또는 3차원)
+	// inquiryData에서 실시간으로 필터링하여 생성
 	
 	// 더미 데이터 (실제로는 API에서 가져올 데이터)
 	const [kpiData] = useState({
@@ -106,94 +121,146 @@ function Dashboard() {
 	// 태그별 히트맵 데이터 (최근 90일)
 	const [heatmapData, setHeatmapData] = useState([])
 	
-	// 다차원 데이터 저장소 - 모든 6C2 조합 자동 생성
-	const [multiDimensionalData] = useState(() => {
-		// 각 차원의 가능한 값들
-		const dimensionValues = {
-			'상담태그': ['반품 및 교환', '구매', '상담', '배송', '결제', '사이즈', '색상', '재입고', '쿠폰', '환불'],
-			'시간대': ['09-11시', '11-13시', '13-15시', '15-17시', '17-19시', '19-21시'],
-			'요일': ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'],
-			'담당자': ['김민수', '이지은', '박준호', '최서연', '정우진'],
-			'고객등급': ['VIP', 'GOLD', 'SILVER', '일반'],
-			'상담상태': ['진행중', '대기중', '완료', '보류']
+	// 현재 선택된 차원 조합의 데이터 가져오기 (2차원 또는 3차원)
+	// inquiryData에서 실시간으로 필터링하여 생성
+	const getCurrentDimensionData = () => {
+		// 차원별 속성 매핑
+		const dimensionMapping = {
+			'상담태그': 'tags',
+			'시간대': 'timeSlot',
+			'요일': 'weekday',
+			'담당자': 'manager',
+			'고객등급': 'customerGrade',
+			'상담상태': 'status'
 		}
 		
-		const data = {}
+		// 계층적 태그를 단순 카테고리로 변환하는 함수
+		const simplifyTag = (tag) => {
+			if (tag.startsWith('고객유형/')) return '고객유형'
+			if (tag.startsWith('상품문의/교환/')) return '교환'
+			if (tag.startsWith('상품문의/반품/')) return '반품'
+			if (tag.startsWith('상품문의/재고/')) return '재고'
+			if (tag.startsWith('배송문의/')) return '배송'
+			if (tag.startsWith('결제문의/')) return '결제'
+			if (tag.startsWith('이벤트/')) return '이벤트'
+			if (tag.startsWith('기타/')) return '기타'
+			return tag
+		}
 		
-		// 모든 차원 조합 생성 (6C2 = 15개)
-		const dimensions = Object.keys(dimensionValues)
-		for (let i = 0; i < dimensions.length; i++) {
-			for (let j = i + 1; j < dimensions.length; j++) {
-				const dim1 = dimensions[i]
-				const dim2 = dimensions[j]
-				const key = `${dim1}-${dim2}`
+		const dim1Key = dimensionMapping[dimension1]
+		const dim2Key = dimensionMapping[dimension2]
+		const dim3Key = dimension3 !== '없음' ? dimensionMapping[dimension3] : null
+		
+		// 차원1의 고유 값들 추출
+		const dim1Values = new Set()
+		inquiryData.forEach(inquiry => {
+			let value = inquiry[dim1Key]
+			
+			// 태그인 경우 배열 처리 및 단순화
+			if (dim1Key === 'tags' && Array.isArray(value)) {
+				value.forEach(v => dim1Values.add(simplifyTag(v)))
+			} else if (Array.isArray(value)) {
+				value.forEach(v => dim1Values.add(v))
+			} else {
+				dim1Values.add(value)
+			}
+		})
+		
+		// 각 차원1 값별로 데이터 집계
+		const result = Array.from(dim1Values).map(dim1Value => {
+			// 차원1에 해당하는 데이터 필터링
+			const filteredByDim1 = inquiryData.filter(inquiry => {
+				let value = inquiry[dim1Key]
 				
-				// 각 조합에 대해 Mock 데이터 생성
-				data[key] = dimensionValues[dim1].slice(0, 5).map(value1 => {
-					const totalCount = Math.floor(Math.random() * 300) + 150
-					const breakdown = {}
-					
-					// dim2의 값들을 랜덤하게 분배
-					const dim2Values = dimensionValues[dim2].slice(0, 4)
-					let remaining = totalCount
-					
-					dim2Values.forEach((value2, idx) => {
-						if (idx === dim2Values.length - 1) {
-							breakdown[value2] = remaining
+				if (dim1Key === 'tags' && Array.isArray(value)) {
+					return value.some(v => simplifyTag(v) === dim1Value)
+				} else if (Array.isArray(value)) {
+					return value.includes(dim1Value)
+				} else {
+					return value === dim1Value
+				}
+			})
+			
+			// 차원2별로 그룹화
+			const dim2Breakdown = {}
+			filteredByDim1.forEach(inquiry => {
+				let dim2Value = inquiry[dim2Key]
+				
+				// 태그인 경우 배열 처리 및 단순화
+				if (dim2Key === 'tags' && Array.isArray(dim2Value)) {
+					dim2Value = dim2Value.map(v => simplifyTag(v))
+				} else if (!Array.isArray(dim2Value)) {
+					dim2Value = [dim2Value]
+				}
+				
+				dim2Value.forEach(v => {
+					if (!dim2Breakdown[v]) {
+						dim2Breakdown[v] = 0
+					}
+					dim2Breakdown[v]++
+				})
+			})
+			
+			const itemData = {
+				dimension1Value: dim1Value,
+				total: filteredByDim1.length,
+				breakdown: dim2Breakdown
+			}
+			
+			// 3차원이 있으면 중첩 데이터 추가
+			if (dim3Key) {
+				// 차원2의 각 값별로 차원3 데이터 생성
+				const dim3All = []
+				Object.keys(dim2Breakdown).forEach(dim2Value => {
+					const filteredByDim2 = filteredByDim1.filter(inquiry => {
+						let value = inquiry[dim2Key]
+						
+						if (dim2Key === 'tags' && Array.isArray(value)) {
+							return value.some(v => simplifyTag(v) === dim2Value)
+						} else if (Array.isArray(value)) {
+							return value.includes(dim2Value)
 						} else {
-							const count = Math.floor(Math.random() * (remaining / 2)) + 10
-							breakdown[value2] = count
-							remaining -= count
+							return value === dim2Value
 						}
 					})
 					
-					return {
-						dimension1Value: value1,
-						total: totalCount,
-						breakdown: breakdown
-					}
+					// 차원3별로 그룹화
+					const dim3Counts = {}
+					filteredByDim2.forEach(inquiry => {
+						let dim3Value = inquiry[dim3Key]
+						
+						// 태그인 경우 배열 처리 및 단순화
+						if (dim3Key === 'tags' && Array.isArray(dim3Value)) {
+							dim3Value = dim3Value.map(v => simplifyTag(v))
+						} else if (!Array.isArray(dim3Value)) {
+							dim3Value = [dim3Value]
+						}
+						
+						dim3Value.forEach(v => {
+							if (!dim3Counts[v]) {
+								dim3Counts[v] = 0
+							}
+							dim3Counts[v]++
+						})
+					})
+					
+					// 상위 3개 추가
+					Object.entries(dim3Counts)
+						.sort((a, b) => b[1] - a[1])
+						.slice(0, 3)
+						.forEach(([value, count]) => {
+							dim3All.push({ value, count })
+						})
 				})
+				
+				itemData.dimension3Breakdown = dim3All
 			}
-		}
-		
-		return data
-	})
-
-	// 현재 선택된 차원 조합의 데이터 가져오기 (2차원 또는 3차원)
-	const getCurrentDimensionData = () => {
-		if (dimension3 === '없음') {
-			// 2차원 분석
-			const key = `${dimension1}-${dimension2}`
-			return multiDimensionalData[key] || []
-		} else {
-			// 3차원 분석 - 중첩 구조로 변환
-			const key2D = `${dimension1}-${dimension2}`
-			const baseData = multiDimensionalData[key2D] || []
 			
-			// 3차원 데이터 시뮬레이션 (실제로는 API에서 가져와야 함)
-			return baseData.map(item => ({
-				...item,
-				dimension3Breakdown: generateDimension3Data(item.dimension1Value, dimension3)
-			}))
-		}
-	}
-	
-	// 3차원 데이터 생성 함수 (더미)
-	const generateDimension3Data = (parentValue, dim3Type) => {
-		const dimension3Options = {
-			'상담태그': ['상담', '구매', '배송', '반품 및 교환', '결제'],
-			'시간대': ['09-11시', '11-13시', '13-15시', '15-17시', '17-19시'],
-			'요일': ['월요일', '화요일', '수요일', '목요일', '금요일'],
-			'담당자': ['김민수', '이지은', '박준호', '최서연', '정우진'],
-			'고객등급': ['VIP', 'GOLD', 'SILVER', '일반'],
-			'상담상태': ['진행중', '대기중', '완료', '보류']
-		}
+			return itemData
+		})
 		
-		const options = dimension3Options[dim3Type] || []
-		return options.slice(0, 3).map(option => ({
-			value: option,
-			count: Math.floor(Math.random() * 80) + 20
-		}))
+		// 총 건수 기준으로 정렬
+		return result.sort((a, b) => b.total - a.total).slice(0, 8)
 	}
 
 	// 태그별 트렌드 데이터 (최근 7일)
