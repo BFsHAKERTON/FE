@@ -282,6 +282,29 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/TagStatListResponse"
+              examples:
+                weeklySuccess:
+                  summary: 최신 인기 태그 예시
+                  value:
+                    range:
+                      start: "2025-11-01T00:00:00Z"
+                      end: "2025-11-07T23:59:59Z"
+                    items:
+                      - tagId: "d1f0f2ab-4b67-4d17-9b38-ef0c1a2f0001"
+                        tagName: "배송문의/배송지연"
+                        count: 42
+                      - tagId: "c2a6e3bc-31d9-4214-a567-ef0c1a2f0002"
+                        tagName: "결제문의/환불"
+                        count: 35
+                      - tagId: "a53ce44e-21d2-4b0a-9bca-ef0c1a2f0003"
+                        tagName: "상품문의/교환/사이즈"
+                        count: 31
+                      - tagId: "b8e8f0a3-89cf-4f56-ae77-ef0c1a2f0004"
+                        tagName: "상품문의/재고/입고문의"
+                        count: 26
+                      - tagId: "ed7c21b4-1325-43a0-8b95-ef0c1a2f0005"
+                        tagName: "이벤트/포인트"
+                        count: 18
         '401':
           description: "인증 실패"
           content:
@@ -354,6 +377,36 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/RegionDistributionResponse"
+              examples:
+                regionSuccess:
+                  summary: 지역 분포 예시
+                  value:
+                    range:
+                      start: "2025-10-08T00:00:00Z"
+                      end: "2025-11-07T23:59:59Z"
+                    total: 186
+                    items:
+                      - city: "서울특별시"
+                        count: 68
+                        ratio: 0.366
+                      - city: "경기도 수원시"
+                        count: 32
+                        ratio: 0.172
+                      - city: "부산광역시"
+                        count: 24
+                        ratio: 0.129
+                      - city: "인천광역시"
+                        count: 18
+                        ratio: 0.097
+                      - city: "대구광역시"
+                        count: 16
+                        ratio: 0.086
+                      - city: "광주광역시"
+                        count: 12
+                        ratio: 0.064
+                      - city: "기타"
+                        count: 16
+                        ratio: 0.086
         '401':
           description: "인증 실패"
           content:
@@ -398,6 +451,137 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/InquiryRawResponse"
+              example:
+                range:
+                  start: "2025-10-09T00:00:00Z"
+                  end: "2025-11-07T23:59:59Z"
+                items:
+                  - inquiryId: "111e4567-e89b-12d3-a456-426614174001"
+                    createdAt: "2025-11-06T02:12:00Z"
+                    tagId: "aaa14567-e89b-12d3-a456-426614174000"
+                    tagName: "배송문의/배송지연"
+                    customerCity: "서울특별시"
+                    customerGrade: "VIP"
+                    channelTalkUserId: "ch_001"
+                  - inquiryId: "111e4567-e89b-12d3-a456-426614174010"
+                    createdAt: "2025-11-06T09:05:00Z"
+                    tagId: "aaa14567-e89b-12d3-a456-426614174008"
+                    tagName: "상품문의/교환/불량"
+                    customerCity: "서울특별시"
+                    customerGrade: "일반"
+                    channelTalkUserId: "ch_008"
+                  - inquiryId: "111e4567-e89b-12d3-a456-426614174002"
+                    createdAt: "2025-11-06T10:45:00Z"
+                    tagId: "aaa14567-e89b-12d3-a456-426614174001"
+                    tagName: "결제문의/환불"
+                    customerCity: "부산광역시"
+                    customerGrade: "일반"
+                    channelTalkUserId: "ch_002"
+                  - inquiryId: "111e4567-e89b-12d3-a456-426614174011"
+                    createdAt: "2025-11-06T15:20:00Z"
+                    tagId: "aaa14567-e89b-12d3-a456-426614174009"
+                    tagName: "상품문의/재고/입고문의"
+                    customerCity: "인천광역시"
+                    customerGrade: null
+                    channelTalkUserId: "ch_009"
+                  - inquiryId: "111e4567-e89b-12d3-a456-426614174003"
+                    createdAt: "2025-11-05T14:31:00Z"
+                    tagId: "aaa14567-e89b-12d3-a456-426614174002"
+                    tagName: "상품문의/교환/사이즈"
+                    customerCity: "대구광역시"
+                    customerGrade: null
+                    channelTalkUserId: "ch_003"
+                  - inquiryId: "111e4567-e89b-12d3-a456-426614174012"
+                    createdAt: "2025-11-05T09:12:00Z"
+                    tagId: "aaa14567-e89b-12d3-a456-42661417400a"
+                    tagName: "배송문의/배송조회"
+                    customerCity: "경기도 성남시"
+                    customerGrade: "일반"
+                    channelTalkUserId: null
+                  - inquiryId: "111e4567-e89b-12d3-a456-426614174004"
+                    createdAt: "2025-11-05T22:05:00Z"
+                    tagId: "aaa14567-e89b-12d3-a456-426614174003"
+                    tagName: "이벤트/포인트"
+                    customerCity: "인천광역시"
+                    customerGrade: "일반"
+                    channelTalkUserId: "ch_004"
+                  - inquiryId: "111e4567-e89b-12d3-a456-426614174005"
+                    createdAt: "2025-11-04T08:10:00Z"
+                    tagId: "aaa14567-e89b-12d3-a456-426614174004"
+                    tagName: "배송문의/배송조회"
+                    customerCity: "경기도 수원시"
+                    customerGrade: "일반"
+                    channelTalkUserId: null
+                  - inquiryId: "111e4567-e89b-12d3-a456-426614174013"
+                    createdAt: "2025-11-04T11:45:00Z"
+                    tagId: "aaa14567-e89b-12d3-a456-426614174002"
+                    tagName: "상품문의/교환/사이즈"
+                    customerCity: "광주광역시"
+                    customerGrade: "VIP"
+                    channelTalkUserId: "ch_010"
+                  - inquiryId: "111e4567-e89b-12d3-a456-426614174006"
+                    createdAt: "2025-11-03T12:25:00Z"
+                    tagId: "aaa14567-e89b-12d3-a456-426614174005"
+                    tagName: "상품문의/재고/입고문의"
+                    customerCity: "대전광역시"
+                    customerGrade: null
+                    channelTalkUserId: "ch_005"
+                  - inquiryId: "111e4567-e89b-12d3-a456-426614174014"
+                    createdAt: "2025-11-03T16:40:00Z"
+                    tagId: "aaa14567-e89b-12d3-a456-426614174001"
+                    tagName: "결제문의/환불"
+                    customerCity: "서울특별시"
+                    customerGrade: "일반"
+                    channelTalkUserId: "ch_011"
+                  - inquiryId: "111e4567-e89b-12d3-a456-426614174007"
+                    createdAt: "2025-11-02T17:55:00Z"
+                    tagId: "aaa14567-e89b-12d3-a456-426614174006"
+                    tagName: "상품문의/교환/불량"
+                    customerCity: "광주광역시"
+                    customerGrade: "일반"
+                    channelTalkUserId: "ch_006"
+                  - inquiryId: "111e4567-e89b-12d3-a456-426614174015"
+                    createdAt: "2025-11-02T11:05:00Z"
+                    tagId: "aaa14567-e89b-12d3-a456-426614174007"
+                    tagName: "결제문의/쿠폰"
+                    customerCity: "부산광역시"
+                    customerGrade: null
+                    channelTalkUserId: null
+                  - inquiryId: "111e4567-e89b-12d3-a456-426614174008"
+                    createdAt: "2025-11-01T09:41:00Z"
+                    tagId: "aaa14567-e89b-12d3-a456-426614174007"
+                    tagName: "결제문의/쿠폰"
+                    customerCity: "울산광역시"
+                    customerGrade: null
+                    channelTalkUserId: null
+                  - inquiryId: "111e4567-e89b-12d3-a456-426614174009"
+                    createdAt: "2025-10-31T20:03:00Z"
+                    tagId: "aaa14567-e89b-12d3-a456-426614174001"
+                    tagName: "결제문의/환불"
+                    customerCity: "서울특별시"
+                    customerGrade: "VIP"
+                    channelTalkUserId: "ch_007"
+                  - inquiryId: "111e4567-e89b-12d3-a456-42661417400a"
+                    createdAt: "2025-10-30T11:22:00Z"
+                    tagId: "aaa14567-e89b-12d3-a456-426614174000"
+                    tagName: "배송문의/배송지연"
+                    customerCity: "경기도 고양시"
+                    customerGrade: "일반"
+                    channelTalkUserId: null
+                  - inquiryId: "111e4567-e89b-12d3-a456-42661417400b"
+                    createdAt: "2025-10-29T09:18:00Z"
+                    tagId: "aaa14567-e89b-12d3-a456-426614174004"
+                    tagName: "배송문의/배송조회"
+                    customerCity: "대구광역시"
+                    customerGrade: "일반"
+                    channelTalkUserId: "ch_012"
+                  - inquiryId: "111e4567-e89b-12d3-a456-42661417400c"
+                    createdAt: "2025-10-28T14:50:00Z"
+                    tagId: "aaa14567-e89b-12d3-a456-426614174003"
+                    tagName: "이벤트/포인트"
+                    customerCity: "서울특별시"
+                    customerGrade: null
+                    channelTalkUserId: "ch_013"
         '401':
           description: "인증 실패"
           content:
@@ -876,6 +1060,154 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
   # ---------------------------------------------
+  # /api/notion/oauth
+  # ---------------------------------------------
+  /api/notion/oauth/login:
+    get:
+      summary: "Notion OAuth 로그인"
+      description: "Notion OAuth 인증 프로세스를 시작하기 위한 Authorization URL을 생성합니다."
+      operationId: notionOAuthLogin
+      tags: ["Notion OAuth"]
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          description: "인증을 요청하는 사용자의 고유 식별자"
+          schema:
+            type: string
+            format: uuid
+          example: "123e4567-e89b-12d3-a456-426614174000"
+      responses:
+        '200':
+          description: "Authorization URL 생성 성공"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  authorizationUrl:
+                    type: string
+                    format: uri
+                    description: "사용자가 리다이렉트되어야 하는 Notion OAuth 인증 URL"
+                    example: "https://api.notion.com/v1/oauth/authorize?client_id={CLIENT_ID}&response_type=code&owner=user&redirect_uri={REDIRECT_URI}&state={ENCODED_STATE}"
+                  message:
+                    type: string
+                    description: "안내 메시지"
+                    example: "Redirect user to this URL to authorize"
+                required: [authorizationUrl, message]
+              examples:
+                success:
+                  summary: 성공 응답 예시
+                  value:
+                    authorizationUrl: "https://api.notion.com/v1/oauth/authorize?client_id=abc123&response_type=code&owner=user&redirect_uri=http://localhost:8080/api/notion/oauth/callback&state=MTIzZTQ1NjctZTg5Yi0xMmQzLWE0NTYtNDI2NjE0MTc0MDAw"
+                    message: "Redirect user to this URL to authorize"
+        '400':
+          description: "잘못된 요청 (유효하지 않은 UUID 형식)"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                invalidUuid:
+                  summary: 잘못된 UUID 형식
+                  value:
+                    error: "Bad Request"
+                    message: "Invalid UUID format"
+                    timestamp: "2024-11-07T23:53:52.172+09:00"
+
+  /api/notion/oauth/callback:
+    get:
+      summary: "Notion OAuth 콜백"
+      description: "Notion에서 인증 후 리다이렉트되는 엔드포인트"
+      operationId: notionOAuthCallback
+      tags: ["Notion OAuth"]
+      parameters:
+        - name: code
+          in: query
+          required: true
+          description: "Notion에서 발급한 인증 코드"
+          schema:
+            type: string
+          example: "abc123def456"
+        - name: state
+          in: query
+          required: true
+          description: "Base64 인코딩된 userId (CSRF 방지용)"
+          schema:
+            type: string
+          example: "MTIzZTQ1NjctZTg5Yi0xMmQzLWE0NTYtNDI2NjE0MTc0MDAw"
+      responses:
+        '200':
+          description: "OAuth 인증 성공 및 토큰 저장 완료"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Notion OAuth authentication successful"
+                  userId:
+                    type: string
+                    format: uuid
+                    example: "123e4567-e89b-12d3-a456-426614174000"
+        '400':
+          description: "잘못된 요청"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        '401':
+          description: "인증 실패"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/notion/oauth/status:
+    get:
+      summary: "Notion 연동 상태 확인"
+      description: "사용자의 Notion 연동 상태를 확인합니다."
+      operationId: notionOAuthStatus
+      tags: ["Notion OAuth"]
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          description: "확인할 사용자의 고유 식별자"
+          schema:
+            type: string
+            format: uuid
+          example: "123e4567-e89b-12d3-a456-426614174000"
+      responses:
+        '200':
+          description: "연동 상태 조회 성공"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userId:
+                    type: string
+                    format: uuid
+                    example: "123e4567-e89b-12d3-a456-426614174000"
+                  isConnected:
+                    type: boolean
+                    description: "Notion 연동 여부"
+                    example: true
+                  connectedAt:
+                    type: string
+                    format: date-time
+                    description: "연동 시간 (연동된 경우)"
+                    example: "2024-11-07T23:53:52.172+09:00"
+        '404':
+          description: "사용자를 찾을 수 없음"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # ---------------------------------------------
   # /webhooks
   # ---------------------------------------------
   /webhooks/channel-talk:
@@ -934,6 +1266,158 @@ paths:
                 example:
                   error: "INVALID_SIGNATURE"
                   message: "유효하지 않은 웹훅 시그니처입니다."
+
+    /api/notion/oauth/login:
+    get:
+      summary: Notion OAuth 로그인
+      description: Notion OAuth 인증 프로세스를 시작하기 위한 Authorization URL을 생성합니다.
+      operationId: notionOAuthLogin
+      tags:
+        - Notion OAuth
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          description: 인증을 요청하는 사용자의 고유 식별자
+          schema:
+            type: string
+            format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+      responses:
+        '200':
+          description: Authorization URL 생성 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  authorizationUrl:
+                    type: string
+                    format: uri
+                    description: 사용자가 리다이렉트되어야 하는 Notion OAuth 인증 URL
+                    example: >-
+                      https://api.notion.com/v1/oauth/authorize?client_id={CLIENT_ID}&response_type=code&owner=user&redirect_uri={REDIRECT_URI}&state={ENCODED_STATE}
+                  message:
+                    type: string
+                    description: 안내 메시지
+                    example: Redirect user to this URL to authorize
+                required:
+                  - authorizationUrl
+                  - message
+              examples:
+                success:
+                  summary: 성공 응답 예시
+                  value:
+                    authorizationUrl: >-
+                      https://api.notion.com/v1/oauth/authorize?client_id=abc123&response_type=code&owner=user&redirect_uri=http://localhost:8080/api/notion/oauth/callback&state=MTIzZTQ1NjctZTg5Yi0xMmQzLWE0NTYtNDI2NjE0MTc0MDAw
+                    message: Redirect user to this URL to authorize
+        '400':
+          description: 잘못된 요청 (유효하지 않은 UUID 형식)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                invalidUuid:
+                  summary: 잘못된 UUID 형식
+                  value:
+                    error: Bad Request
+                    message: Invalid UUID format
+                    timestamp: 2024-11-07T23:53:52.172+09:00
+
+  /api/notion/oauth/callback:
+    get:
+      summary: Notion OAuth 콜백
+      description: Notion에서 인증 후 리다이렉트되는 엔드포인트
+      operationId: notionOAuthCallback
+      tags:
+        - Notion OAuth
+      parameters:
+        - name: code
+          in: query
+          required: true
+          description: Notion에서 발급한 인증 코드
+          schema:
+            type: string
+          example: abc123def456
+        - name: state
+          in: query
+          required: true
+          description: Base64 인코딩된 userId (CSRF 방지용)
+          schema:
+            type: string
+          example: MTIzZTQ1NjctZTg5Yi0xMmQzLWE0NTYtNDI2NjE0MTc0MDAw
+      responses:
+        '200':
+          description: OAuth 인증 성공 및 토큰 저장 완료
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Notion OAuth authentication successful
+                  userId:
+                    type: string
+                    format: uuid
+                    example: 123e4567-e89b-12d3-a456-426614174000
+        '400':
+          description: 잘못된 요청
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 인증 실패
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/notion/oauth/status:
+    get:
+      summary: Notion 연동 상태 확인
+      description: 사용자의 Notion 연동 상태를 확인합니다.
+      operationId: notionOAuthStatus
+      tags:
+        - Notion OAuth
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          description: 확인할 사용자의 고유 식별자
+          schema:
+            type: string
+            format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+      responses:
+        '200':
+          description: 연동 상태 조회 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userId:
+                    type: string
+                    format: uuid
+                    example: 123e4567-e89b-12d3-a456-426614174000
+                  isConnected:
+                    type: boolean
+                    description: Notion 연동 여부
+                    example: true
+                  connectedAt:
+                    type: string
+                    format: date-time
+                    description: 연동 시간 (연동된 경우)
+                    example: 2024-11-07T23:53:52.172+09:00
+        '404':
+          description: 사용자를 찾을 수 없음
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'    
 
 # ===============================================
 # 2. Reusable Components (재사용 가능한 정의)

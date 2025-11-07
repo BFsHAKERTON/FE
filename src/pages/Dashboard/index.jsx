@@ -7,7 +7,12 @@ import TagTrendsCard from "./TagTrendsCard";
 import KpiSummaryCard from "./KpiSummaryCard";
 
 // import { getWeeklyKeywords } from "../../shared/api/services/stats";
-import { mockInquiryData } from "../../data/mockInquiryData";
+import {
+  getTopWeeklyTags,
+  getCustomerRegionDistribution,
+  getInquiriesSummary,
+  getInquiriesRaw,
+} from "../../shared/api/services/stats";
 
 const BASE_TAGS = [
   "고객유형/일반",
@@ -32,47 +37,25 @@ const BASE_TAGS = [
   "기타/건의",
 ];
 
-const NORMALIZED_INQUIRIES = normalizeMockInquiryData(mockInquiryData);
-
-const EXTRA_TAGS = Array.from(
-  new Set(
-    NORMALIZED_INQUIRIES.flatMap((item) =>
-      (item.tags || []).filter(
-        (tag) => tag && tag !== "전체" && !BASE_TAGS.includes(tag)
-      )
-    )
-  )
-).sort((a, b) => a.localeCompare(b));
-
-const HIERARCHICAL_TAGS = ["전체", ...BASE_TAGS, ...EXTRA_TAGS];
+// Heatmap tags will be hydrated from API raw items after load
 
 const AVAILABLE_DIMENSIONS = [
   "상담태그",
   "시간대",
   "요일",
   "고객등급",
-  "상담상태",
 ];
 
-const KPI_DATA = {
-  totalInquiries: 1234,
-  avgResponseTime: 145,
+const DEFAULT_KPI_DATA = {
+  totalInquiries: 0,
 };
 
-const TAG_TREND_DATA = {
-  "반품 및 교환": [45, 52, 48, 61, 58, 73, 68],
-  구매: [38, 42, 35, 44, 51, 47, 49],
-  상담: [62, 58, 65, 59, 72, 68, 71],
-  배송: [28, 31, 35, 29, 38, 42, 40],
-  결제: [22, 25, 19, 27, 24, 29, 31],
-};
-
-const REGION_SEGMENTS = [
-  { label: "서울·경기", value: 148, color: "#7C3AED" },
-  { label: "영남", value: 92, color: "#22D3EE" },
-  { label: "충청", value: 74, color: "#34D399" },
-  { label: "호남", value: 58, color: "#FACC15" },
-  { label: "기타", value: 36, color: "#F472B6" },
+const DEFAULT_REGION_SEGMENTS = [
+  { label: "서울·경기", value: 0, color: "#7C3AED" },
+  { label: "영남", value: 0, color: "#22D3EE" },
+  { label: "충청", value: 0, color: "#34D399" },
+  { label: "호남", value: 0, color: "#FACC15" },
+  { label: "기타", value: 0, color: "#F472B6" },
 ];
 
 const MULTI_DIMENSIONAL_DATA = {
@@ -460,17 +443,23 @@ const MULTI_DIMENSIONAL_DATA = {
   ],
 };
 
-function normalizeMockInquiryData(data) {
-  if (!Array.isArray(data)) return [];
-
-  return data
-    .map((inquiry) => {
-      const date = normalizeDate(inquiry?.date || inquiry?.createdAt);
+function normalizeRawItems(items) {
+  if (!Array.isArray(items)) return [];
+  return items
+    .map((it) => {
+      const created = it?.createdAt || it?.date;
+      const date = normalizeDate(created);
       if (!date) return null;
+      const d = created ? new Date(created) : null;
+      const hour = d && !Number.isNaN(d.getTime()) ? d.getHours() : null;
+      const weekday = d && !Number.isNaN(d.getTime()) ? d.getDay() : null;
+      const tagName = typeof it?.tagName === "string" ? it.tagName : null;
       return {
-        ...inquiry,
         date,
-        tags: Array.isArray(inquiry?.tags) ? inquiry.tags : [],
+        tags: tagName ? [tagName] : [],
+        hour,
+        weekday,
+        customerGrade: it?.customerGrade ?? null,
       };
     })
     .filter(Boolean);
@@ -481,6 +470,138 @@ function normalizeDate(input) {
   const date = new Date(input);
   if (Number.isNaN(date.getTime())) return null;
   return date.toISOString().split("T")[0];
+}
+
+function computeMultiDimData(items, dim1, dim2) {
+  if (!Array.isArray(items) || items.length === 0) return [];
+
+  const weekdayNames = ["일", "월", "화", "수", "목", "금", "토"];
+  const hourBucketLabel = (h) => {
+    if (typeof h !== "number" || h < 0 || h > 23) return "미지정";
+    const start = Math.floor(h / 4) * 4; // 0,4,8,12,16,20
+    const end = start + 3;
+    const pad = (n) => (n < 10 ? `0${n}` : `${n}`);
+    return `${pad(start)}~${pad(end)}시`;
+  };
+
+  const valueOf = (item, dim) => {
+    switch (dim) {
+      case "상담태그": {
+        const t = Array.isArray(item.tags) && item.tags[0] ? item.tags[0] : null;
+        return t || "미지정";
+      }
+      case "요일": {
+        const w = typeof item.weekday === "number" ? item.weekday : null;
+        return w != null ? `${weekdayNames[w]}요일` : "미지정";
+      }
+      case "시간대": {
+        return hourBucketLabel(item.hour);
+      }
+      case "고객등급": {
+        return item?.customerGrade || "미지정";
+      }
+      default:
+        return "기타";
+    }
+  };
+
+  const group = new Map();
+  for (const it of items) {
+    const v1 = valueOf(it, dim1);
+    const v2 = valueOf(it, dim2);
+    const entry = group.get(v1) || { total: 0, breakdown: {} };
+    entry.total += 1;
+    entry.breakdown[v2] = (entry.breakdown[v2] || 0) + 1;
+    group.set(v1, entry);
+  }
+
+  return Array.from(group.entries()).map(([dimension1Value, data]) => ({
+    dimension1Value,
+    total: data.total,
+    breakdown: data.breakdown,
+  }));
+}
+
+function startOfWeek(date) {
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+  const day = d.getDay();
+  const diff = (day + 6) % 7; // Monday 기준
+  d.setDate(d.getDate() - diff);
+  return d;
+}
+
+function computeWeekdayTagTrends(items) {
+  if (!Array.isArray(items) || items.length === 0) {
+    return { dayLabels: [], tagTrends: {} };
+  }
+
+  const parsedItems = items
+    .map((item) => {
+      const tagName = Array.isArray(item.tags) && item.tags[0] ? item.tags[0] : null;
+      if (!tagName) return null;
+      const date = item.date ? new Date(item.date) : null;
+      if (!date || Number.isNaN(date.getTime())) return null;
+      date.setHours(0, 0, 0, 0);
+      return { tagName, date };
+    })
+    .filter(Boolean);
+
+  if (parsedItems.length === 0) {
+    return { dayLabels: [], tagTrends: {} };
+  }
+
+  parsedItems.sort((a, b) => b.date - a.date);
+  const latestDate = parsedItems[0].date;
+
+  const MAX_WEEKS_BACK = 4;
+  const weekdayLabels = ["월", "화", "수", "목", "금"];
+
+  for (let weekOffset = 0; weekOffset < MAX_WEEKS_BACK; weekOffset += 1) {
+    const weekStart = startOfWeek(new Date(latestDate));
+    weekStart.setDate(weekStart.getDate() - weekOffset * 7);
+    const dayDates = Array.from({ length: 5 }, (_, idx) => {
+      const d = new Date(weekStart);
+      d.setDate(d.getDate() + idx);
+      return d;
+    });
+    const dayKeys = dayDates.map((d) => d.toISOString().split("T")[0]);
+
+    const tagMap = new Map();
+
+    parsedItems.forEach(({ tagName, date }) => {
+      const key = date.toISOString().split("T")[0];
+      const dayIdx = dayKeys.indexOf(key);
+      if (dayIdx === -1) return;
+      if (!tagMap.has(tagName)) {
+        tagMap.set(tagName, new Array(5).fill(0));
+      }
+      const counts = tagMap.get(tagName);
+      counts[dayIdx] += 1;
+    });
+
+    const withTotals = Array.from(tagMap.entries())
+      .map(([tag, counts]) => ({ tag, counts, total: counts.reduce((sum, v) => sum + v, 0) }))
+      .filter((entry) => entry.total > 0)
+      .sort((a, b) => b.total - a.total)
+      .slice(0, 5);
+
+    if (withTotals.length === 0) {
+      continue;
+    }
+
+    const tagTrends = {};
+    withTotals.forEach(({ tag, counts }) => {
+      tagTrends[tag] = counts;
+    });
+
+    return {
+      dayLabels: weekdayLabels,
+      tagTrends,
+    };
+  }
+
+  return { dayLabels: [], tagTrends: {} };
 }
 
 function generateTagFilteredHeatmap(inquiryData, tagFilter) {
@@ -558,6 +679,10 @@ function Dashboard({ isDark = true }) {
   const [tagFilter, setTagFilter] = useState("전체");
   const [dimension1, setDimension1] = useState("상담태그");
   const [dimension2, setDimension2] = useState("시간대");
+  const [kpiData, setKpiData] = useState(DEFAULT_KPI_DATA);
+  const [regionSegments, setRegionSegments] = useState(DEFAULT_REGION_SEGMENTS);
+  const [rawInquiries, setRawInquiries] = useState([]);
+  const [hierarchicalTags, setHierarchicalTags] = useState(["전체", ...BASE_TAGS]);
 
   useEffect(() => {
     let mounted = true;
@@ -583,15 +708,76 @@ function Dashboard({ isDark = true }) {
     };
   }, []);
 
+  // Load raw inquiries for heatmap (last 30 days)
   useEffect(() => {
-    if (!HIERARCHICAL_TAGS.includes(tagFilter)) {
+    let mounted = true;
+    (async () => {
+      try {
+        const end = new Date();
+        const start = new Date();
+        start.setDate(end.getDate() - 60);
+        const res = await getInquiriesRaw({ start: start.toISOString(), end: end.toISOString() });
+        const items = Array.isArray(res?.items) ? res.items : [];
+        const normalized = normalizeRawItems(items);
+        if (mounted) {
+          setRawInquiries(normalized);
+          const extra = Array.from(
+            new Set(
+              normalized.flatMap((it) => (it.tags || [])).filter(
+                (tag) => tag && tag !== "전체" && !BASE_TAGS.includes(tag)
+              )
+            )
+          ).sort((a, b) => a.localeCompare(b));
+          setHierarchicalTags(["전체", ...BASE_TAGS, ...extra]);
+        }
+      } catch (e) {
+        // keep empty state
+      }
+    })();
+    return () => { mounted = false; };
+  }, []);
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const summary = await getInquiriesSummary({});
+        if (mounted && summary?.totalInquiries != null) {
+          setKpiData((prev) => ({ ...prev, totalInquiries: summary.totalInquiries }));
+        }
+      } catch {}
+    })();
+    return () => { mounted = false; };
+  }, []);
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const region = await getCustomerRegionDistribution({});
+        const items = Array.isArray(region?.items) ? region.items : [];
+        // Map API cities to segments with stable colors (fallback colors reused cyclically)
+        const palette = ["#7C3AED", "#22D3EE", "#34D399", "#FACC15", "#F472B6"]; 
+        const mapped = items.map((it, idx) => ({
+          label: it.city || `지역${idx+1}`,
+          value: it.count || 0,
+          color: palette[idx % palette.length],
+        }));
+        if (mounted) setRegionSegments(mapped);
+      } catch {}
+    })();
+    return () => { mounted = false; };
+  }, []);
+
+  useEffect(() => {
+    if (!hierarchicalTags.includes(tagFilter)) {
       setTagFilter("전체");
     }
-  }, [tagFilter]);
+  }, [tagFilter, hierarchicalTags]);
 
   const tagHeatmapData = useMemo(
-    () => generateTagFilteredHeatmap(NORMALIZED_INQUIRIES, tagFilter),
-    [tagFilter]
+    () => generateTagFilteredHeatmap(rawInquiries, tagFilter),
+    [rawInquiries, tagFilter]
   );
 
   const maxCount = useMemo(
@@ -602,13 +788,13 @@ function Dashboard({ isDark = true }) {
   const weeks = useMemo(() => buildWeeks(tagHeatmapData), [tagHeatmapData]);
 
   const regionTotal = useMemo(
-    () => REGION_SEGMENTS.reduce((sum, seg) => sum + seg.value, 0),
-    []
+    () => regionSegments.reduce((sum, seg) => sum + seg.value, 0),
+    [regionSegments]
   );
 
   const regionGradient = useMemo(
-    () => computeRegionGradient(REGION_SEGMENTS),
-    []
+    () => computeRegionGradient(regionSegments),
+    [regionSegments]
   );
 
   const topKeyword = useMemo(() => {
@@ -658,10 +844,32 @@ function Dashboard({ isDark = true }) {
   const primaryTextClass = isDark ? "text-gray-200" : "text-[#2b2f4d]";
   const subtleTextClass = isDark ? "text-gray-400" : "text-[#6b7196]";
 
-  const getCurrentDimensionData = () => {
-    const key = `${dimension1}-${dimension2}`;
-    return MULTI_DIMENSIONAL_DATA[key] || [];
-  };
+  const multiDimData = useMemo(() => {
+    return computeMultiDimData(rawInquiries, dimension1, dimension2);
+  }, [rawInquiries, dimension1, dimension2]);
+
+  const getCurrentDimensionData = () => multiDimData;
+
+  const vipRatio = useMemo(() => {
+    if (!Array.isArray(rawInquiries) || rawInquiries.length === 0) {
+      return null;
+    }
+    const vipCount = rawInquiries.filter((it) => {
+      if (typeof it?.customerGrade !== "string") return false;
+      return it.customerGrade.trim().toUpperCase() === "VIP";
+    }).length;
+    if (vipCount === 0) {
+      return 0;
+    }
+    const total = rawInquiries.length;
+    if (!total) return null;
+    return (vipCount / total) * 100;
+  }, [rawInquiries]);
+
+  const { dayLabels, tagTrends } = useMemo(
+    () => computeWeekdayTagTrends(rawInquiries),
+    [rawInquiries]
+  );
 
   return (
     <div
@@ -703,7 +911,7 @@ function Dashboard({ isDark = true }) {
           surfaceClass={surfaceClass}
           headlineClass={headlineClass}
           subtleTextClass={subtleTextClass}
-          hierarchicalTags={HIERARCHICAL_TAGS}
+          hierarchicalTags={hierarchicalTags}
           tagFilter={tagFilter}
           onTagFilterChange={setTagFilter}
           tagHeatmapData={tagHeatmapData}
@@ -718,7 +926,7 @@ function Dashboard({ isDark = true }) {
           headlineClass={headlineClass}
           primaryTextClass={primaryTextClass}
           subtleTextClass={subtleTextClass}
-          regionSegments={REGION_SEGMENTS}
+        regionSegments={regionSegments}
           regionTotal={regionTotal}
           regionGradient={regionGradient}
         />
@@ -744,14 +952,16 @@ function Dashboard({ isDark = true }) {
         headlineClass={headlineClass}
         primaryTextClass={primaryTextClass}
         subtleTextClass={subtleTextClass}
-        tagTrendData={TAG_TREND_DATA}
+        tagTrendData={tagTrends}
+        dayLabels={dayLabels}
       />
 
       <KpiSummaryCard
         surfaceClass={surfaceClass}
         primaryTextClass={primaryTextClass}
         subtleTextClass={subtleTextClass}
-        kpiData={KPI_DATA}
+        kpiData={kpiData}
+        vipRatio={vipRatio}
         isDark={isDark}
         topKeyword={topKeyword}
       />

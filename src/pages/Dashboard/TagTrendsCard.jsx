@@ -1,25 +1,49 @@
-function TagTrendsCard({ surfaceClass, headlineClass, primaryTextClass, subtleTextClass, tagTrendData }) {
+function TagTrendsCard({
+  surfaceClass,
+  headlineClass,
+  primaryTextClass,
+  subtleTextClass,
+  tagTrendData,
+  dayLabels = [],
+}) {
+  const labels = dayLabels.length ? dayLabels : ["월", "화", "수", "목", "금"];
+
   return (
     <div className={`rounded-2xl p-6 mb-8 transition-all duration-300 ${surfaceClass} w-full`}>
-      <h2 className={`text-xl font-semibold mb-6 ${headlineClass}`}>태그별 트렌드 (최근 7일)</h2>
+      <h2 className={`text-xl font-semibold mb-6 ${headlineClass}`}>
+        태그별 요일 패턴 (최근 주중)
+      </h2>
       <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
         {Object.entries(tagTrendData).map(([tag, data]) => (
           <div key={tag} className="space-y-4">
             <h3 className={`text-sm font-semibold ${primaryTextClass}`}>{tag}</h3>
-            <div className="flex items-end gap-1 h-32">
-              {data.map((value, idx) => (
-                <div key={idx} className="flex-1 flex flex-col items-center gap-1">
-                  <div
-                    className="w-full bg-linear-to-t from-blue-500 to-blue-300 rounded-t hover:from-blue-600 hover:to-blue-400 transition-colors"
-                    style={{ height: `${(value / Math.max(...data)) * 100}%` }}
-                    title={`${value}건`}
-                  />
-                  <span className={`text-xs ${subtleTextClass}`}>
-                    {["월", "화", "수", "목", "금", "토", "일"][idx]}
-                  </span>
+            {(() => {
+              const values = Array.isArray(data) ? data : [];
+              const maxValue = Math.max(...values, 0);
+              return (
+                <div className="flex items-end gap-2 h-32">
+                  {values.map((value, idx) => {
+                    const heightPercent = maxValue > 0 ? (value / maxValue) * 100 : 0;
+                    return (
+                      <div key={idx} className="flex-1 flex flex-col items-center gap-1">
+                        <div
+                          className="w-full rounded-t transition-all duration-200"
+                          style={{
+                            height: `${heightPercent}%`,
+                            background: "linear-gradient(180deg, #4f46e5 0%, #60a5fa 100%)",
+                            opacity: heightPercent > 0 ? 1 : 0.2,
+                          }}
+                          aria-hidden="true"
+                        />
+                        <span className={`text-xs ${subtleTextClass}`}>
+                          {labels[idx] || ""}
+                        </span>
+                      </div>
+                    );
+                  })}
                 </div>
-              ))}
-            </div>
+              );
+            })()}
             <div className="text-center">
               <span className={`text-2xl font-bold ${primaryTextClass}`}>
                 {data.reduce((a, b) => a + b, 0)}

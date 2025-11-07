@@ -1,12 +1,20 @@
-function KpiSummaryCard({ surfaceClass, primaryTextClass, subtleTextClass, kpiData, isDark, topKeyword }) {
+function formatVipRatio(vipRatio) {
+  if (typeof vipRatio !== "number" || Number.isNaN(vipRatio)) {
+    return "데이터 없음";
+  }
+  return `${vipRatio.toFixed(1)}%`;
+}
+
+function KpiSummaryCard({ surfaceClass, primaryTextClass, subtleTextClass, kpiData, vipRatio, isDark, topKeyword }) {
+  const totalInquiries = typeof kpiData?.totalInquiries === "number" ? kpiData.totalInquiries : 0;
   const cards = [
     {
       label: "총 상담 건수",
-      value: `${kpiData.totalInquiries.toLocaleString()}`,
+      value: `${totalInquiries.toLocaleString()}`,
     },
     {
-      label: "평균 응답 시간",
-      value: `${Math.floor(kpiData.avgResponseTime / 60)}m ${kpiData.avgResponseTime % 60}s`,
+      label: "VIP 고객 비중",
+      value: formatVipRatio(vipRatio),
     },
     {
       label: "가장 많이 언급된 태그",

@@ -43,10 +43,27 @@ export function startKakaoLogin(redirectUri) {
  * @returns {Promise<AuthTokens>}
  */
 export function mockLogin(credentials) {
-	if (!credentials || Object.keys(credentials).length === 0) {
-		return http.post(`${API_PREFIX}/auth/mock/login`);
-	}
-	return http.post(`${API_PREFIX}/auth/mock/login`, { body: credentials });
+	const req = (!credentials || Object.keys(credentials).length === 0)
+		? http.post(`${API_PREFIX}/auth/mock/login`)
+		: http.post(`${API_PREFIX}/auth/mock/login`, { body: credentials });
+	return req.catch((err) => {
+		const status = /** @type {{ status?: number }} */(err)?.status;
+		if (!status || status === 404) {
+			/** @type {AuthTokens} */
+			const tokens = {
+				accessToken: `mock-access-${Math.random().toString(36).slice(2)}`,
+				refreshToken: `mock-refresh-${Math.random().toString(36).slice(2)}`,
+			};
+			if (typeof window !== 'undefined') {
+				try {
+					localStorage.setItem('accessToken', tokens.accessToken);
+					localStorage.setItem('refreshToken', tokens.refreshToken);
+				} catch {}
+			}
+			return tokens;
+		}
+		throw err;
+	});
 }
 
 // NOTE: /auth/kakao/callback은 서버가 HTML을 반환하여 토큰 저장/리디렉션을 수행합니다.
