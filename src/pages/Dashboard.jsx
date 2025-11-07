@@ -7,6 +7,21 @@ function Dashboard() {
 	const [keywords, setKeywords] = useState([])
 	const [selectedTag, setSelectedTag] = useState('전체')
 	
+	// 다차원 분석을 위한 차원(Dimension) 선택
+	const [dimension1, setDimension1] = useState('유입페이지')
+	const [dimension2, setDimension2] = useState('상담태그')
+	
+	// 사용 가능한 차원들
+	const availableDimensions = [
+		'유입페이지',
+		'상담태그',
+		'시간대',
+		'요일',
+		'담당자',
+		'고객등급',
+		'상담상태'
+	]
+	
 	// 더미 데이터 (실제로는 API에서 가져올 데이터)
 	const [kpiData] = useState({
 		totalInquiries: 1234,
@@ -18,59 +33,412 @@ function Dashboard() {
 	// 태그별 히트맵 데이터 (최근 90일)
 	const [heatmapData, setHeatmapData] = useState([])
 	
-	// 유입 페이지 x 태그 결합 데이터
-	const [referrerTagData] = useState([
-		{ 
-			page: '/products/shoes',
-			total: 342,
-			tags: {
-				'반품 및 교환': 142,
-				'상담': 98,
-				'사이즈': 67,
-				'색상': 35
+	// 다차원 데이터 저장소 (모든 조합 가능한 데이터)
+	const [multiDimensionalData] = useState({
+		// 유입페이지 × 상담태그
+		'유입페이지-상담태그': [
+			{ 
+				dimension1Value: '/products/shoes',
+				total: 342,
+				breakdown: {
+					'반품 및 교환': 142,
+					'상담': 98,
+					'사이즈': 67,
+					'색상': 35
+				}
+			},
+			{ 
+				dimension1Value: '/cart',
+				total: 289,
+				breakdown: {
+					'결제': 128,
+					'구매': 89,
+					'배송': 52,
+					'쿠폰': 20
+				}
+			},
+			{ 
+				dimension1Value: '/products/bags',
+				total: 198,
+				breakdown: {
+					'상담': 87,
+					'재입고': 54,
+					'반품 및 교환': 38,
+					'가격': 19
+				}
+			},
+			{ 
+				dimension1Value: '/my-page',
+				total: 156,
+				breakdown: {
+					'회원': 78,
+					'포인트': 43,
+					'등급': 25,
+					'정보수정': 10
+				}
+			},
+			{ 
+				dimension1Value: '/orders',
+				total: 123,
+				breakdown: {
+					'배송': 67,
+					'취소': 34,
+					'교환': 15,
+					'영수증': 7
+				}
 			}
-		},
-		{ 
-			page: '/cart',
-			total: 289,
-			tags: {
-				'결제': 128,
-				'구매': 89,
-				'배송': 52,
-				'쿠폰': 20
+		],
+		
+		// 시간대 × 상담태그
+		'시간대-상담태그': [
+			{
+				dimension1Value: '09-11시',
+				total: 234,
+				breakdown: {
+					'구매': 89,
+					'상담': 67,
+					'배송': 45,
+					'반품 및 교환': 33
+				}
+			},
+			{
+				dimension1Value: '11-13시',
+				total: 198,
+				breakdown: {
+					'결제': 78,
+					'배송': 56,
+					'상담': 42,
+					'구매': 22
+				}
+			},
+			{
+				dimension1Value: '13-15시',
+				total: 267,
+				breakdown: {
+					'반품 및 교환': 112,
+					'상담': 78,
+					'배송': 54,
+					'사이즈': 23
+				}
+			},
+			{
+				dimension1Value: '15-17시',
+				total: 312,
+				breakdown: {
+					'상담': 134,
+					'구매': 87,
+					'결제': 61,
+					'배송': 30
+				}
+			},
+			{
+				dimension1Value: '17-19시',
+				total: 223,
+				breakdown: {
+					'배송': 98,
+					'상담': 67,
+					'취소': 38,
+					'환불': 20
+				}
 			}
-		},
-		{ 
-			page: '/products/bags',
-			total: 198,
-			tags: {
-				'상담': 87,
-				'재입고': 54,
-				'반품 및 교환': 38,
-				'가격': 19
+		],
+		
+		// 요일 × 상담태그
+		'요일-상담태그': [
+			{
+				dimension1Value: '월요일',
+				total: 189,
+				breakdown: {
+					'배송': 87,
+					'상담': 54,
+					'취소': 32,
+					'환불': 16
+				}
+			},
+			{
+				dimension1Value: '화요일',
+				total: 234,
+				breakdown: {
+					'구매': 98,
+					'상담': 76,
+					'결제': 43,
+					'배송': 17
+				}
+			},
+			{
+				dimension1Value: '수요일',
+				total: 267,
+				breakdown: {
+					'상담': 112,
+					'반품 및 교환': 89,
+					'사이즈': 44,
+					'색상': 22
+				}
+			},
+			{
+				dimension1Value: '목요일',
+				total: 298,
+				breakdown: {
+					'구매': 134,
+					'결제': 87,
+					'상담': 56,
+					'배송': 21
+				}
+			},
+			{
+				dimension1Value: '금요일',
+				total: 312,
+				breakdown: {
+					'결제': 156,
+					'구매': 89,
+					'배송': 47,
+					'상담': 20
+				}
+			},
+			{
+				dimension1Value: '토요일',
+				total: 156,
+				breakdown: {
+					'상담': 67,
+					'구매': 54,
+					'반품 및 교환': 25,
+					'배송': 10
+				}
+			},
+			{
+				dimension1Value: '일요일',
+				total: 123,
+				breakdown: {
+					'상담': 56,
+					'구매': 38,
+					'배송': 20,
+					'기타': 9
+				}
 			}
-		},
-		{ 
-			page: '/my-page',
-			total: 156,
-			tags: {
-				'회원': 78,
-				'포인트': 43,
-				'등급': 25,
-				'정보수정': 10
+		],
+		
+		// 담당자 × 상담태그
+		'담당자-상담태그': [
+			{
+				dimension1Value: '김민수',
+				total: 287,
+				breakdown: {
+					'상담': 123,
+					'구매': 89,
+					'배송': 54,
+					'반품 및 교환': 21
+				}
+			},
+			{
+				dimension1Value: '이지은',
+				total: 312,
+				breakdown: {
+					'반품 및 교환': 145,
+					'상담': 98,
+					'사이즈': 47,
+					'색상': 22
+				}
+			},
+			{
+				dimension1Value: '박준호',
+				total: 234,
+				breakdown: {
+					'결제': 112,
+					'구매': 76,
+					'쿠폰': 32,
+					'환불': 14
+				}
+			},
+			{
+				dimension1Value: '최서연',
+				total: 267,
+				breakdown: {
+					'배송': 134,
+					'취소': 78,
+					'교환': 38,
+					'환불': 17
+				}
+			},
+			{
+				dimension1Value: '정우진',
+				total: 198,
+				breakdown: {
+					'상담': 98,
+					'회원': 56,
+					'포인트': 32,
+					'등급': 12
+				}
 			}
-		},
-		{ 
-			page: '/orders',
-			total: 123,
-			tags: {
-				'배송': 67,
-				'취소': 34,
-				'교환': 15,
-				'영수증': 7
+		],
+		
+		// 고객등급 × 상담태그
+		'고객등급-상담태그': [
+			{
+				dimension1Value: 'VIP',
+				total: 234,
+				breakdown: {
+					'상담': 112,
+					'구매': 78,
+					'배송': 32,
+					'포인트': 12
+				}
+			},
+			{
+				dimension1Value: 'GOLD',
+				total: 312,
+				breakdown: {
+					'구매': 145,
+					'상담': 98,
+					'결제': 47,
+					'배송': 22
+				}
+			},
+			{
+				dimension1Value: 'SILVER',
+				total: 398,
+				breakdown: {
+					'상담': 178,
+					'반품 및 교환': 112,
+					'배송': 76,
+					'구매': 32
+				}
+			},
+			{
+				dimension1Value: '일반',
+				total: 456,
+				breakdown: {
+					'상담': 198,
+					'배송': 134,
+					'반품 및 교환': 89,
+					'결제': 35
+				}
 			}
-		}
-	])
+		],
+		
+		// 상담상태 × 상담태그
+		'상담상태-상담태그': [
+			{
+				dimension1Value: '진행중',
+				total: 156,
+				breakdown: {
+					'상담': 78,
+					'구매': 43,
+					'배송': 25,
+					'결제': 10
+				}
+			},
+			{
+				dimension1Value: '대기중',
+				total: 89,
+				breakdown: {
+					'긴급': 45,
+					'상담': 28,
+					'배송': 12,
+					'기타': 4
+				}
+			},
+			{
+				dimension1Value: '완료',
+				total: 892,
+				breakdown: {
+					'상담': 312,
+					'구매': 234,
+					'배송': 198,
+					'반품 및 교환': 148
+				}
+			},
+			{
+				dimension1Value: '보류',
+				total: 67,
+				breakdown: {
+					'복잡한 문의': 34,
+					'상담': 18,
+					'반품 및 교환': 10,
+					'기타': 5
+				}
+			}
+		],
+		
+		// 유입페이지 × 시간대
+		'유입페이지-시간대': [
+			{
+				dimension1Value: '/products/shoes',
+				total: 342,
+				breakdown: {
+					'09-11시': 45,
+					'11-13시': 67,
+					'13-15시': 98,
+					'15-17시': 89,
+					'17-19시': 43
+				}
+			},
+			{
+				dimension1Value: '/cart',
+				total: 289,
+				breakdown: {
+					'09-11시': 34,
+					'11-13시': 78,
+					'13-15시': 67,
+					'15-17시': 76,
+					'17-19시': 34
+				}
+			},
+			{
+				dimension1Value: '/products/bags',
+				total: 198,
+				breakdown: {
+					'09-11시': 23,
+					'11-13시': 45,
+					'13-15시': 56,
+					'15-17시': 52,
+					'17-19시': 22
+				}
+			}
+		],
+		
+		// 요일 × 시간대
+		'요일-시간대': [
+			{
+				dimension1Value: '월요일',
+				total: 189,
+				breakdown: {
+					'09-11시': 34,
+					'11-13시': 45,
+					'13-15시': 52,
+					'15-17시': 43,
+					'17-19시': 15
+				}
+			},
+			{
+				dimension1Value: '화요일',
+				total: 234,
+				breakdown: {
+					'09-11시': 45,
+					'11-13시': 56,
+					'13-15시': 62,
+					'15-17시': 54,
+					'17-19시': 17
+				}
+			},
+			{
+				dimension1Value: '수요일',
+				total: 267,
+				breakdown: {
+					'09-11시': 52,
+					'11-13시': 67,
+					'13-15시': 76,
+					'15-17시': 58,
+					'17-19시': 14
+				}
+			}
+		]
+	})
+
+	// 현재 선택된 차원 조합의 데이터 가져오기
+	const getCurrentDimensionData = () => {
+		const key = `${dimension1}-${dimension2}`
+		return multiDimensionalData[key] || []
+	}
 
 	// 태그별 트렌드 데이터 (최근 7일)
 	const [tagTrendData] = useState({
@@ -233,51 +601,106 @@ function Dashboard() {
 					</div>
 				</div>
 
-				{/* Referrer Pages x Tags */}
+				{/* Multi-Dimensional Analysis */}
 				<div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
-					<h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6">
-						🔗 유입 페이지 × 태그 분석
-					</h2>
-					<div className="space-y-6">
-						{referrerTagData.map((ref, idx) => (
-							<div key={idx} className="space-y-3">
-								{/* 페이지 헤더 */}
-								<div className="flex items-center justify-between pb-2 border-b border-gray-200 dark:border-gray-700">
-									<span className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate" title={ref.page}>
-										{ref.page}
-									</span>
-									<span className="text-lg font-bold text-blue-600 dark:text-blue-400 ml-2">
-										{ref.total}
-									</span>
-								</div>
-								
-								{/* 태그별 분포 */}
-								<div className="space-y-2 pl-2">
-									{Object.entries(ref.tags)
-										.sort((a, b) => b[1] - a[1])
-										.map(([tag, count], tagIdx) => {
-											const percentage = (count / ref.total) * 100
-											return (
-												<div key={tagIdx} className="flex items-center gap-2">
-													<span className="text-xs text-gray-600 dark:text-gray-400 w-20 truncate" title={tag}>
-														{tag}
-													</span>
-													<div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
-														<div 
-															className="bg-gradient-to-r from-emerald-400 to-emerald-600 h-1.5 rounded-full transition-all"
-															style={{ width: `${percentage}%` }}
-														/>
-													</div>
-													<span className="text-xs font-medium text-gray-700 dark:text-gray-300 w-8 text-right">
-														{count}
-													</span>
-												</div>
-											)
-										})}
-								</div>
+					<div className="mb-6">
+						<h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+							� 다차원 분석 (nC2 조합)
+						</h2>
+						
+						{/* Dimension Selector */}
+						<div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+							<div className="flex items-center gap-2">
+								<label className="text-sm text-gray-600 dark:text-gray-400">차원 1:</label>
+								<select 
+									value={dimension1}
+									onChange={(e) => setDimension1(e.target.value)}
+									className="px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+								>
+									{availableDimensions.map(dim => (
+										<option key={dim} value={dim}>{dim}</option>
+									))}
+								</select>
 							</div>
-						))}
+							
+							<span className="text-gray-400">×</span>
+							
+							<div className="flex items-center gap-2">
+								<label className="text-sm text-gray-600 dark:text-gray-400">차원 2:</label>
+								<select 
+									value={dimension2}
+									onChange={(e) => setDimension2(e.target.value)}
+									className="px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+								>
+									{availableDimensions.filter(d => d !== dimension1).map(dim => (
+										<option key={dim} value={dim}>{dim}</option>
+									))}
+								</select>
+							</div>
+							
+							<div className="text-xs text-gray-500 dark:text-gray-400 bg-blue-50 dark:bg-blue-900/20 px-3 py-1 rounded-full">
+								{getCurrentDimensionData().length > 0 
+									? `${getCurrentDimensionData().reduce((sum, item) => sum + item.total, 0)} 건` 
+									: '데이터 없음'}
+							</div>
+						</div>
 					</div>
+					
+					{/* Data Display */}
+					{getCurrentDimensionData().length > 0 ? (
+						<div className="space-y-6">
+							{getCurrentDimensionData().map((item, idx) => (
+								<div key={idx} className="space-y-3">
+									{/* Header */}
+									<div className="flex items-center justify-between pb-2 border-b border-gray-200 dark:border-gray-700">
+										<span className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate" title={item.dimension1Value}>
+											{item.dimension1Value}
+										</span>
+										<span className="text-lg font-bold text-blue-600 dark:text-blue-400 ml-2">
+											{item.total}
+										</span>
+									</div>
+									
+									{/* Breakdown */}
+									<div className="space-y-2 pl-2">
+										{Object.entries(item.breakdown)
+											.sort((a, b) => b[1] - a[1])
+											.map(([key, count], tagIdx) => {
+												const percentage = (count / item.total) * 100
+												return (
+													<div key={tagIdx} className="flex items-center gap-2">
+														<span className="text-xs text-gray-600 dark:text-gray-400 w-24 truncate" title={key}>
+															{key}
+														</span>
+														<div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
+															<div 
+																className="bg-gradient-to-r from-emerald-400 to-emerald-600 h-1.5 rounded-full transition-all"
+																style={{ width: `${percentage}%` }}
+															/>
+														</div>
+														<span className="text-xs font-medium text-gray-700 dark:text-gray-300 w-8 text-right">
+															{count}
+														</span>
+														<span className="text-xs text-gray-500 dark:text-gray-400 w-12 text-right">
+															{percentage.toFixed(1)}%
+														</span>
+													</div>
+												)
+											})}
+									</div>
+								</div>
+							))}
+						</div>
+					) : (
+						<div className="text-center py-12">
+							<p className="text-gray-500 dark:text-gray-400 text-sm">
+								해당 조합의 데이터가 없습니다.
+							</p>
+							<p className="text-gray-400 dark:text-gray-500 text-xs mt-2">
+								다른 차원 조합을 선택해주세요.
+							</p>
+						</div>
+					)}
 				</div>
 			</div>
 
